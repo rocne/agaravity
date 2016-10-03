@@ -26,10 +26,18 @@ function draw() {
 	background(25);
 	
 	handleInteractions();
+	updateAndDisplayThings();	
+}
+
+function updateAndDisplayThings() {
 	for (var i = 0; i < th.length; i++) {
-		th[i].update();
-		th[i].show();
-		var r = th[i].getRadius();
+		if (th[i].shouldBeDestroyed) {
+			th.splice(i, 1);
+		} else {
+			th[i].update();
+			th[i].show();
+			var r = th[i].getRadius();
+		}
 	}
 }
 

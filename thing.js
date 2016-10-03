@@ -5,10 +5,9 @@ var DENSITY = 1;
 function thing() {
 	// fields
 	this.mass = 2275;
-	this.x = Math.floor(Math.random() * WIDTH);
-	this.y = Math.floor(Math.random() * HEIGHT);
-	this.x_speed = Math.floor(Math.random() * 25);
-	this.y_speed = Math.floor(Math.random() * 25);
+	this.pos = createVector(Math.floor(Math.random() * WIDTH), Math.floor(Math.random() * HEIGHT));
+	this.vel = createVector(Math.floor(Math.random() * 25), Math.floor(Math.random() * 25));	
+	this.shouldBeDestroyed = false;
 
 	// public functions
 	this.getRadius = function() {
@@ -21,9 +20,8 @@ function thing() {
 	}
 
 	this.distanceTo = function(otherThing) {
-		var dx = this.x - otherThing.x;
-		var dy = this.y - otherThing.y;
-		var dist = Math.sqrt(dx * dx + dy * dy);
+		var vectorToOther = p5.Vector.sub(this.pos, otherThing.pos);
+		var dist = vectorToOther.mag();
 		return dist;
 	
 	}
@@ -32,24 +30,44 @@ function thing() {
 		return this.distanceTo(otherThing) <= this.getRadius() + otherThing.getRadius();
 	}
 
+	this.getCombinedMomentum = function(otherThing) {
+		var myMomentumX = this.vel.x * this.mass;
+		var myMomentumY = this.vel.y * this.mass;
+		var theirMomentumX = otherThing.vel.x * otherThing.mass;
+		var theirMomentumY = otherThing.vel.y * otherThing.mass;
+
+		var totalMomentumX = myMomentumX + theirMomentumX;
+		var totalMomentumY = myMomentumY + theirMomentumY;
+
+		var totalMomentumMagnitude = Math.sqrt(totalMomentumX * totalMomentumX + totalMomentumY * totalMomentumY);
+
+
+	}
+
+	this.absorb = function (otherThing) {
+		this.mass += otherThing.mass;
+
+		otherThing.shouldBeDestroyed = true;
+	}
+
 	this.update = function() {
-		this.x += this.x_speed;
-		this.y += this.y_speed;
+		this.pos.x += this.vel.x;
+		this.pos.y += this.vel.y;
 		
 		var r = this.getRadius();
 		
-		if (this.x <= 0 && this.x_speed < 0)
-			this.x_speed *= -1;
-		if (this.x >= (WIDTH - r * 2) && this.x_speed > 0)
-			this.x_speed *= -1;
-		if (this.y <= 0 && this.y_speed < 0)
-			this.y_speed *= -1;
-		if (this.y >= (HEIGHT - r * 2) && this.y_speed > 0)
-			this.y_speed *= -1;
+		if (this.pos.x <= 0 && this.vel.x < 0)
+			this.vel.x *= -1;
+		if (this.pos.x >= (WIDTH - r * 2) && this.vel.x > 0)
+			this.vel.x *= -1;
+		if (this.pos.y <= 0 && this.vel.y < 0)
+			this.vel.y *= -1;
+		if (this.pos.y >= (HEIGHT - r * 2) && this.vel.y > 0)
+			this.vel.y *= -1;
 	}
 
 	this.show = function () {
-		ellipse(this.x, this.y, Math.floor(this.getRadius()),
+		ellipse(this.pos.x, this.pos.y, Math.floor(this.getRadius()),
 					Math.floor(this.getRadius()));
 	}
 
