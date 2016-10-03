@@ -4,7 +4,7 @@ var DENSITY = 1;
 
 function thing() {
 	// fields
-	this.mass = 2275;
+	this.mass = 2275 + Math.random() * 100;
 	this.pos = createVector(Math.floor(Math.random() * WIDTH), Math.floor(Math.random() * HEIGHT));
 	this.vel = createVector(Math.floor(Math.random() * 25), Math.floor(Math.random() * 25));	
 	this.shouldBeDestroyed = false;

@@ -48,6 +48,9 @@ function handleInteractions() {
 				// handle interaction
 				if (th[i].isCollidingWith(th[j])) {
 					console.log ("colliding at (%d, %d)", th[i].x, th[i].y);
+					if (th[i].mass > th[j].mass)
+						th[i].absorb(th[j]);
+
 				}
 			}
 		}
