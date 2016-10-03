@@ -31,21 +31,17 @@ function thing() {
 	}
 
 	this.getCombinedMomentum = function(otherThing) {
-		var myMomentumX = this.vel.x * this.mass;
-		var myMomentumY = this.vel.y * this.mass;
-		var theirMomentumX = otherThing.vel.x * otherThing.mass;
-		var theirMomentumY = otherThing.vel.y * otherThing.mass;
-
-		var totalMomentumX = myMomentumX + theirMomentumX;
-		var totalMomentumY = myMomentumY + theirMomentumY;
-
-		var totalMomentumMagnitude = Math.sqrt(totalMomentumX * totalMomentumX + totalMomentumY * totalMomentumY);
-
-
+		var myMomentum = p5.Vector.mult(this.vel, this.mass);
+		var theirMomentum = p5.Vector.mult(otherThing.vel, otherThing.mass);		
+		var totalMomentum = p5.Vector.add(myMomentum, theirMomentum);
+		return totalMomentum;
 	}
 
 	this.absorb = function (otherThing) {
+		var totalMomentum = this.getCombinedMomentum(otherThing);
 		this.mass += otherThing.mass;
+
+		this.vel = p5.Vector.mult(totalMomentum, 1.0 / this.mass);
 
 		otherThing.shouldBeDestroyed = true;
 	}
@@ -56,19 +52,18 @@ function thing() {
 		
 		var r = this.getRadius();
 		
-		if (this.pos.x <= 0 && this.vel.x < 0)
+		if (this.pos.x - r <= 0 && this.vel.x < 0)
 			this.vel.x *= -1;
-		if (this.pos.x >= (WIDTH - r * 2) && this.vel.x > 0)
+		if (this.pos.x >= WIDTH - r && this.vel.x > 0)
 			this.vel.x *= -1;
-		if (this.pos.y <= 0 && this.vel.y < 0)
+		if (this.pos.y - r <= 0 && this.vel.y < 0)
 			this.vel.y *= -1;
-		if (this.pos.y >= (HEIGHT - r * 2) && this.vel.y > 0)
+		if (this.pos.y >= HEIGHT - r && this.vel.y > 0)
 			this.vel.y *= -1;
 	}
 
 	this.show = function () {
-		ellipse(this.pos.x, this.pos.y, Math.floor(this.getRadius()),
-					Math.floor(this.getRadius()));
+		ellipse(this.pos.x, this.pos.y, 2 * Math.floor(this.getRadius()));
 	}
 
 }

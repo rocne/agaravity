@@ -2,6 +2,8 @@
 var WIDTH = 2000;
 var HEIGHT = 1800;
 
+var INITIAL_NUM_THINGS = 250;
+
 // debugging vars
 var lastFrameTime = 0;
 var shouldLogFrameRate = false;
@@ -12,10 +14,11 @@ var th = Array();
 
 function setup() {
 	createCanvas(WIDTH, HEIGHT);
-	for (var i = 0; i < 20; i++)
+	for (var i = 0; i < INITIAL_NUM_THINGS; i++)
 		th[i] = new thing();
 
 	lastFrameTime = getTime();
+	imageMode(CORNER);
 }
 
 function draw() {
@@ -25,6 +28,8 @@ function draw() {
 
 	background(25);
 	
+	rect(10, 10, WIDTH -20, HEIGHT -20);
+
 	handleInteractions();
 	updateAndDisplayThings();	
 }
