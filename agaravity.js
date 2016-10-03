@@ -24,7 +24,8 @@ function draw() {
 		logFrameRate();
 
 	background(25);
-
+	
+	handleInteractions();
 	for (var i = 0; i < th.length; i++) {
 		th[i].update();
 		th[i].show();
@@ -32,11 +33,14 @@ function draw() {
 	}
 }
 
-function handleInterations() {
+function handleInteractions() {
 	for (var i = 0; i < th.length; i++) {
 		for (var j = 0; j < th.length; j++) {
 			if (i != j) {
-
+				// handle interaction
+				if (th[i].isCollidingWith(th[j])) {
+					console.log ("colliding at (%d, %d)", th[i].x, th[i].y);
+				}
 			}
 		}
 	}

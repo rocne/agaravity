@@ -20,6 +20,18 @@ function thing() {
 		return radius;
 	}
 
+	this.distanceTo = function(otherThing) {
+		var dx = this.x - otherThing.x;
+		var dy = this.y - otherThing.y;
+		var dist = Math.sqrt(dx * dx + dy * dy);
+		return dist;
+	
+	}
+
+	this.isCollidingWith = function(otherThing) {
+		return this.distanceTo(otherThing) <= this.getRadius() + otherThing.getRadius();
+	}
+
 	this.update = function() {
 		this.x += this.x_speed;
 		this.y += this.y_speed;
