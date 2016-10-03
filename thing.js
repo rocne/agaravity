@@ -2,11 +2,14 @@
 var SIZ = 20;
 var DENSITY = 1;
 
+var MAX_RAND_VEL = 25;
+
 function thing() {
 	// fields
 	this.mass = 2275 + Math.random() * 100;
 	this.pos = createVector(Math.floor(Math.random() * WIDTH), Math.floor(Math.random() * HEIGHT));
-	this.vel = createVector(Math.floor(Math.random() * 25), Math.floor(Math.random() * 25));	
+	this.vel = createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, 
+				Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL);	
 	this.shouldBeDestroyed = false;
 
 	// public functions
