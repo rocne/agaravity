@@ -10,6 +10,8 @@ var MAX_RAND_VEL = 25;
 /* Notes
 *	-rotational inertia for a disk, I = 0.5 * m * r * r 
 *	-rotational momentu, L = I * angular_velocity
+*
+*	This is just a change to test my git settings - rocne 10/4/2016
 */
 
 function thing() {
