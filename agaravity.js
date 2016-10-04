@@ -36,6 +36,7 @@ function draw() {
 
 	background(25);
 	
+	fill(255);	
 	rect(10, 10, WIDTH -20, HEIGHT -20);
 
 	handleInteractions();
