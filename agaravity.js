@@ -1,6 +1,6 @@
 // constants
-var WIDTH = 2000;
-var HEIGHT = 1800;
+var WIDTH = 2500;
+var HEIGHT = 1400;
 
 var INITIAL_NUM_THINGS = 250;
 
@@ -51,14 +51,16 @@ function handleInteractions() {
 		for (var j = 0; j < th.length; j++) {
 			if (i != j) {
 				// handle interaction
+				th[i].accumulateForce(th[i].getGravitationalForce(th[j]));
 				if (th[i].isCollidingWith(th[j])) {
 					if (th[i].mass > th[j].mass)
 						th[i].absorb(th[j]);
-
 				}
 			}
 		}
 	}
+	for (var i = 0; i < th.length; i++)
+		th[i].applyAccumulatedForce();
 }
 
 function logFrameRate() {
