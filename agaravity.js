@@ -1,6 +1,6 @@
 // constants
-var WIDTH = 2500;
-var HEIGHT = 1400;
+var WIDTH = 0;//2500;
+var HEIGHT = 0;//1400;
 
 var INITIAL_NUM_THINGS = 250;
 
@@ -12,7 +12,15 @@ var fooCount = 0;
 // sim variables
 var th = Array();
 
+window.onload = function() {
+	HEIGHT = window.innerHeight * 0.95;
+	WIDTH = window.innerWidth * 0.95;
+}
+
 function setup() {
+	while (WIDTH == 0 || HEIGHT == 0)
+		;
+
 	createCanvas(WIDTH, HEIGHT);
 	for (var i = 0; i < INITIAL_NUM_THINGS; i++)
 		th[i] = new thing();
