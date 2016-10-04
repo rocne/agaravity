@@ -1,4 +1,3 @@
-
 var SIZ = 20;
 var DENSITY = 10;
 
@@ -7,6 +6,11 @@ var INDICATOR_SIZE_RATIO = 0.1;
 var GRAV = 0.1;
 
 var MAX_RAND_VEL = 25;
+
+/* Notes
+*	-rotational inertia for a disk, I = 0.5 * m * r * r 
+*	-rotational momentu, L = I * angular_velocity
+*/
 
 function thing() {
 	// fields
