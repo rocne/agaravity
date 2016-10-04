@@ -2,12 +2,16 @@
 var SIZ = 20;
 var DENSITY = 10;
 
-var GRAV = 0.02;
+var INDICATOR_SIZE_RATIO = 0.1;
+
+var GRAV = 0.1;
 
 var MAX_RAND_VEL = 25;
 
 function thing() {
 	// fields
+	this.angle = 0;
+	this.angularVelocity = 0.1;
 	this.mass = 2275 + Math.random() * 100;
 	this.pos = createVector(Math.floor(Math.random() * WIDTH), Math.floor(Math.random() * HEIGHT));
 	this.vel = createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, 
@@ -84,8 +88,11 @@ function thing() {
 	}
 
 	this.update = function() {
-		this.pos.add(this.vel);
-	
+		this.updatePositionAndAngle();
+		this.handleEdgeBounce();
+	}
+
+	this.handleEdgeBounce = function() {
 		var r = this.getRadius();
 		
 		// bounce the balls off the edges of the play area
@@ -99,8 +106,28 @@ function thing() {
 			this.vel.y *= -1;
 	}
 
+	this.updatePositionAndAngle = function() {
+		this.pos.add(this.vel);
+		this.angle += this.angularVelocity;
+	}
+	
 	this.show = function () {
-		ellipse(this.pos.x, this.pos.y, 2 * Math.floor(this.getRadius()));
+		var r = Math.floor(this.getRadius());
+		
+		var r_indicator = r * (1 - INDICATOR_SIZE_RATIO);
+		var indicatorOffset = createVector(Math.cos(this.angle), Math.sin(this.angle)).mult(r_indicator);
+		var posIndicator = p5.Vector.add(this.pos, indicatorOffset);
+	
+
+		fill(20);
+		ellipse(this.pos.x, this.pos.y, 2 * r);
+		
+
+		fill(200);
+		ellipse(this.pos.x, this.pos.y, r);	
+		
+		fill(255, 0, 0);		
+		ellipse(posIndicator.x, posIndicator.y, 2 * r * INDICATOR_SIZE_RATIO);
 	}
 
 }
