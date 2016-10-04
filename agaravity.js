@@ -28,14 +28,10 @@ function createButtonInput(name, clickedFunction) {
 	var input = document.createElement("BUTTON");
 	input.setAttribute("name", name);
 	input.onclick = clickedFunction;
+	input.innerHTML = name;
 	inputs[name] = input;
 
-	var label = document.createElement("LABEL");
-	label.setAttribute("for", name);
-	label.innerHTML = name;	
-
-	label.appendChild(input);
-	document.body.appendChild(label);
+	document.body.appendChild(input);
 	document.body.appendChild(document.createElement("BR"));
 }
 
