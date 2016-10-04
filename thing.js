@@ -1,9 +1,9 @@
 var SIZ = 20;
-var DENSITY = 10;
+var DENSITY = 100;
 
 var INDICATOR_SIZE_RATIO = 0.1;
 
-var GRAV = 0.1;
+var GRAV = 0.01;
 
 var MAX_RAND_VEL = 25;
 
