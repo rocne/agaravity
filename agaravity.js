@@ -12,9 +12,70 @@ var fooCount = 0;
 // sim variables
 var th = Array();
 
+var inputs = {};
+
+var stopped = false;
+
 window.onload = function() {
 	HEIGHT = window.innerHeight * 0.95;
 	WIDTH = window.innerWidth * 0.95;
+	
+	createButtonInput("start/stop", startStopClicked);
+	createRangeInput("grav", 0, 0.25, GRAV, updateGrav);
+}
+
+function createButtonInput(name, clickedFunction) {
+	var input = document.createElement("BUTTON");
+	input.setAttribute("name", name);
+	input.onclick = clickedFunction;
+	inputs[name] = input;
+
+	var label = document.createElement("LABEL");
+	label.setAttribute("for", name);
+	label.innerHTML = name;	
+
+	label.appendChild(input);
+	document.body.appendChild(label);
+	document.body.appendChild(document.createElement("BR"));
+}
+
+function createRangeInput(name, min, max, defaultValue, changeFunction) {	
+	var input = document.createElement("INPUT");
+	input.setAttribute("name", name);
+	input.setAttribute("type", "range");
+	input.setAttribute("min", min);
+	input.setAttribute("max", max);
+	input.setAttribute("step", 0.005);
+	input.setAttribute("defaultValue", defaultValue);
+	input.value = defaultValue;
+	input.onchange = changeFunction;
+	inputs[name] = input;
+
+	var label = document.createElement("LABEL");
+	label.setAttribute("for", name);
+	label.innerHTML = name;	
+
+	var readOut = document.createElement("SPAN");
+	readOut.innerHTML = defaultValue;
+	input.readOut = readOut;
+	
+	label.appendChild(input);
+	label.appendChild(readOut);
+	document.body.appendChild(label);
+	document.body.appendChild(document.createElement("BR"));
+}
+
+function startStopClicked() {
+	stopped = ! stopped;
+}
+
+function updateGrav() {
+	console.log(inputs);
+	var value = inputs["grav"].value;
+	GRAV = value;	
+	inputs["grav"].readOut.innerHTML = value;
+	console.log("updated grav to " + value);
+
 }
 
 function setup() {
@@ -22,11 +83,15 @@ function setup() {
 		;
 
 	createCanvas(WIDTH, HEIGHT);
-	for (var i = 0; i < INITIAL_NUM_THINGS; i++)
-		th[i] = new thing();
+	createThings(INITIAL_NUM_THINGS);
 
 	lastFrameTime = getTime();
 	imageMode(CORNER);
+}
+
+function createThings(numberOfThings) {
+	for (var i = 0; i < numberOfThings; i++)
+		th.push(new thing);
 }
 
 function draw() {
@@ -39,20 +104,27 @@ function draw() {
 	fill(255);	
 	rect(10, 10, WIDTH -20, HEIGHT -20);
 
-	handleInteractions();
-	updateAndDisplayThings();	
+	if (!stopped) {
+		handleInteractions();
+		updateThings();
+	}
+
+	displayThings();
 }
 
-function updateAndDisplayThings() {
+function updateThings() {
 	for (var i = 0; i < th.length; i++) {
 		if (th[i].shouldBeDestroyed) {
 			th.splice(i, 1);
 		} else {
 			th[i].update();
-			th[i].show();
-			var r = th[i].getRadius();
 		}
 	}
+}
+
+function displayThings() {
+	for (var i = 0; i < th.length; i++)
+			th[i].show();
 }
 
 function handleInteractions() {
