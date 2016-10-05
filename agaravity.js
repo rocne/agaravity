@@ -1,9 +1,10 @@
-// constants
-var WIDTH = 0;//2500;
-var HEIGHT = 0;//1400;
-
+// View values
+var WIDTH = 0;
+var HEIGHT = 0;/
 var SCALE = 1.0;
 
+
+// Reset values
 var INITIAL_NUM_THINGS = 250;
 
 var RANDOM_MASS_CENTER = 2275;
@@ -20,6 +21,7 @@ var fooCount = 0;
 // sim variables
 var th = Array();
 
+// inputs and input state values
 var inputs = {};
 
 var stopped = false;
