@@ -18,6 +18,7 @@ var inputs = {};
 
 var stopped = false;
 var bounceEnabled = true;
+var trackLargestThingEnabled = false;
 
 function getZoomedWidth() {
 	return WIDTH / SCALE;
@@ -112,6 +113,17 @@ function updateZoom() {
 	this.readOut.innerHTML = this.value;
 }
 
+function numThingsChanged() {
+	INITIAL_NUM_THINGS = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
+function trackLargestThingEnabledChanged() {
+	trackLargestThingEnabled = ! trackLargestThingEnabled
+
+	console.log(trackLargestThingEnabled);
+}
+
 function createInputs() {
 	var div = document.createElement("DIV");
 
@@ -119,8 +131,9 @@ function createInputs() {
 	var resetButton = createButtonInput("reset", resetClicked);
 	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
 	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceChanged);
-	var zoomInput = createRangeInput("zoom", 0.05, 5.0, 1.0, 0.01, updateZoom);
-	
+	var zoomInput = createRangeInput("zoom", 0.05, 2.5, 1.0, 0.01, updateZoom);
+	var numElementsInput = createRangeInput("num things", 1, 1500, INITIAL_NUM_THINGS, 1, numThingsChanged);	
+	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN ZOOM = 1)", trackLargestThingEnabled, trackLargestThingEnabledChanged);
 
 	div.appendChild(startStopButton);
 	div.appendChild(document.createElement("BR"));
@@ -131,6 +144,10 @@ function createInputs() {
 	div.appendChild(enableBounce);
 	div.appendChild(document.createElement("BR"));
 	div.appendChild(zoomInput);
+	div.appendChild(document.createElement("BR"));
+	div.appendChild(numElementsInput);
+	div.appendChild(document.createElement("BR"));
+	div.appendChild(enableTrackLargestThing);
 	div.appendChild(document.createElement("BR"));
 
 	document.body.appendChild(div);
@@ -154,6 +171,7 @@ function createThings(numberOfThings) {
 
 function draw() {
 	fooCount++;
+	
 	if (shouldLogFrameRate)
 		logFrameRate();
 
@@ -167,8 +185,23 @@ function draw() {
 		updateThings();
 	}
 
+	if (trackLargestThingEnabled) {
+		var largestThing = th[getLargestThingIndex()];
+		translate(getZoomedWidth() / 2 - largestThing.pos.x, getZoomedHeight() / 2 - largestThing.pos.y);
+	}
+
 	scale(SCALE, SCALE);
 	displayThings();
+	
+}
+
+function getLargestThingIndex() {
+	var largestThingIndex = 0;
+	for (var i = 0; i < this.th.length; i++) {
+		if (th[i].mass > th[largestThingIndex].mass)
+			largestThingIndex = i;
+	}
+	return largestThingIndex;
 }
 
 function updateThings() {
