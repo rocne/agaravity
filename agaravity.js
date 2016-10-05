@@ -17,12 +17,6 @@ var inputs = {};
 var stopped = false;
 
 window.onload = function() {
-	HEIGHT = window.innerHeight * 0.95;
-	WIDTH = window.innerWidth * 0.95;
-	
-	createButtonInput("start/stop", startStopClicked);
-	createButtonInput("reset", resetClicked);
-	createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
 }
 
 function resetClicked() {
@@ -36,9 +30,7 @@ function createButtonInput(name, clickedFunction) {
 	input.onclick = clickedFunction;
 	input.innerHTML = name;
 	inputs[name] = input;
-
-	document.body.appendChild(input);
-	document.body.appendChild(document.createElement("BR"));
+	return input;
 }
 
 function createRangeInput(name, min, max, defaultValue, step, changeFunction) {	
@@ -63,8 +55,7 @@ function createRangeInput(name, min, max, defaultValue, step, changeFunction) {
 	
 	label.appendChild(input);
 	label.appendChild(readOut);
-	document.body.appendChild(label);
-	document.body.appendChild(document.createElement("BR"));
+	return label;
 }
 
 function startStopClicked() {
@@ -80,9 +71,34 @@ function updateGrav() {
 
 }
 
+function setWindowDimensions() {
+	HEIGHT = window.innerHeight * 0.95;
+	WIDTH = window.innerWidth * 0.95;
+
+	if (WIDTH == 0 || HEIGHT == 0)
+		WIDTH = HEIGHT = 1080;
+}
+
+function createInputs() {
+	var div = document.createElement("DIV");
+
+	var startStopButton = createButtonInput("start/stop", startStopClicked);
+	var resetButton = createButtonInput("reset", resetClicked);
+	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
+
+	div.appendChild(startStopButton);
+	div.appendChild(document.createElement("BR"));
+	div.appendChild(resetButton);
+	div.appendChild(document.createElement("BR"));
+	div.appendChild(gravInput);
+	div.appendChild(document.createElement("BR"));
+
+	document.body.appendChild(div);
+}
+
 function setup() {
-	while (WIDTH == 0 || HEIGHT == 0)
-		;
+	createInputs();	
+	setWindowDimensions();
 
 	createCanvas(WIDTH, HEIGHT);
 	createThings(INITIAL_NUM_THINGS);
