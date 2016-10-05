@@ -29,9 +29,9 @@ function getZoomedHeight() {
 }
 
 function resetClicked() {
+	setWindowDimensions();
 	th = [];
 	createThings(INITIAL_NUM_THINGS);		
-	setWindowDimensions();
 	resizeCanvas(WIDTH, HEIGHT);	
 }
 
