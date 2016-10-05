@@ -182,6 +182,8 @@ function numThingsChanged() {
 }
 
 function trackLargestThingEnabledChanged() {
+	// TODO: when tracking is enabled, apply forcer with arrow keys
+	//	 maybe scroll wheel to change strength
 	trackLargestThingEnabled = ! trackLargestThingEnabled
 
 	console.log(trackLargestThingEnabled);
