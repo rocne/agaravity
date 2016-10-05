@@ -27,6 +27,7 @@ function thing() {
 	this.pos = createVector(Math.floor(Math.random() * getZoomedWidth()), Math.floor(Math.random() * getZoomedHeight()));
 	this.vel = createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, 
 				Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL);	
+	this.isLocked = false;
 
 	this.history = [];
 
@@ -52,6 +53,10 @@ function thing() {
 
 	this.accumulateForce = function(force) {
 		this.accumulatedForce.add(force);
+	}
+	
+	this.toggleLocked = function() {
+		this.isLocked = !this.isLocked;
 	}
 
 	this.applyAccumulatedForce = function() {
@@ -125,8 +130,10 @@ function thing() {
 	}
 
 	this.updatePositionAndAngle = function() {
-		this.pos.add(this.vel);
-		this.angle += this.angularVelocity;
+		if (!this.isLocked) {
+			this.pos.add(this.vel);
+			this.angle += this.angularVelocity;
+		}
 	}
 	
 	this.updateHistory = function() {

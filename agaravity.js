@@ -58,6 +58,28 @@ function createCheckboxInput(name, defaultValue, changeFunction) {
 	return label;
 }
 
+function mousePressed() {
+	var clicked = -1;
+	var mouseVect = createVector(mouseX / SCALE, mouseY / SCALE);
+
+	for (var i = 0; i < this.th.length; i++) {
+		var d = mouseVect.dist(th[i].pos);
+		var r = th[i].getRadius();
+		if (d < r) {
+			// clicked on the thing
+			if (clicked == -1) {
+				clicked = i;
+			} else if (th[i].mass > th[clicked].mass) {
+				clicked = i;
+			}
+		}
+	}
+
+	if (clicked != -1) {
+		th[clicked].toggleLocked();
+	}
+}
+
 function createLabel(name) {
 	var label = document.createElement("LABEL");
 	label.setAttribute("for", name);
@@ -104,8 +126,6 @@ function updateGrav() {
 	var value = inputs["grav"].value;
 	GRAV = value;	
 	inputs["grav"].readOut.innerHTML = value;
-	console.log("updated grav to " + value);
-
 }
 
 function setWindowDimensions() {
@@ -154,7 +174,7 @@ function createInputs() {
 	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceChanged);
 	var zoomInput = createRangeInput("zoom", 0.05, 2.5, 1.0, 0.01, updateZoom);
 	var numElementsInput = createRangeInput("num things", 1, 1500, INITIAL_NUM_THINGS, 1, numThingsChanged);	
-	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN ZOOM = 1)", trackLargestThingEnabled, trackLargestThingEnabledChanged);
+	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN SCALE = 1)", trackLargestThingEnabled, trackLargestThingEnabledChanged);
 	var enableShowHistory = createCheckboxInput("enable show history", SHOW_HISTORY, showHistoryChanged);	
 	var historyLength = createRangeInput("history length", 0, 100, HISTORY_LENGTH, 1, historyLengthChanged);
 
