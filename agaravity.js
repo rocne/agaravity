@@ -45,9 +45,7 @@ function createButtonInput(name, clickedFunction) {
 }
 
 function createCheckboxInput(name, defaultValue, changeFunction) {
-	var label = document.createElement("LABEL");
-	label.setAttribute("for", name);
-	label.innerHTML = name;	
+	var label = createLabel(name);
 
 	var input = document.createElement("INPUT");
 	input.setAttribute("type", "checkbox");
@@ -55,6 +53,19 @@ function createCheckboxInput(name, defaultValue, changeFunction) {
 	input.onchange = changeFunction;
 
 	label.appendChild(input);
+	label.appendChild(document.createElement("BR"));
+
+	return label;
+}
+
+function createLabel(name) {
+	var label = document.createElement("LABEL");
+	label.setAttribute("for", name);
+	var span = document.createElement("SPAN");
+	span.setAttribute("class", "input_label");
+	span.innerHTML = name;
+	label.appendChild(span);
+	label.appendChild(document.createElement("BR"));
 	return label;
 }
 
@@ -68,11 +79,11 @@ function createRangeInput(name, min, max, defaultValue, step, changeFunction) {
 	input.setAttribute("defaultValue", defaultValue);
 	input.value = defaultValue;
 	input.onchange = changeFunction;
+	input.style.width = Math.floor(0.9 * WIDTH) + "px";
+	console.log(input.style.width);
 	inputs[name] = input;
-
-	var label = document.createElement("LABEL");
-	label.setAttribute("for", name);
-	label.innerHTML = name;	
+	
+	var label = createLabel(name);
 
 	var readOut = document.createElement("SPAN");
 	readOut.innerHTML = defaultValue;
@@ -80,6 +91,7 @@ function createRangeInput(name, min, max, defaultValue, step, changeFunction) {
 	
 	label.appendChild(input);
 	label.appendChild(readOut);
+	label.appendChild(document.createElement("BR"));
 	return label;
 }
 
@@ -139,6 +151,7 @@ function createInputs() {
 	div.appendChild(document.createElement("BR"));
 	div.appendChild(resetButton);
 	div.appendChild(document.createElement("BR"));
+	div.appendChild(document.createElement("BR"));
 	div.appendChild(gravInput);
 	div.appendChild(document.createElement("BR"));
 	div.appendChild(enableBounce);
@@ -154,8 +167,8 @@ function createInputs() {
 }
 
 function setup() {
-	createInputs();	
 	setWindowDimensions();
+	createInputs();	
 
 	createCanvas(WIDTH, HEIGHT);
 	createThings(INITIAL_NUM_THINGS);
