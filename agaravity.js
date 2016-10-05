@@ -160,7 +160,6 @@ function startStopInputChange_cb() {
 }
 
 function gravInputChange_cb() {
-	console.log(inputs);
 	var value = inputs["grav"].value;
 	GRAV = value;	
 	inputs["grav"].readOut.innerHTML = value;
@@ -235,7 +234,7 @@ function createInputs() {
 	createRangeInput	(inputContainer, "num things", 			1, 		1500, 	INITIAL_NUM_THINGS, 1, 		numThingsInputChange_cb);
 
 	createCheckboxInput	(inputContainer, "enable bounce", 		bounceEnabled, enableBounceInputChange_cb);
-	createCheckboxInput	(inputContainer, "track largest thing (ONLY WORKS WHEN SCALE = 1)", trackLargestThingEnabled, trackLargestThingInputChange_cb);
+	createCheckboxInput	(inputContainer, "track largest thing", trackLargestThingEnabled, trackLargestThingInputChange_cb);
 	createCheckboxInput	(inputContainer, "enable show history", SHOW_HISTORY, showHistoryChange_cb);	
 	
 	createButtonInput	(inputContainer, "start/stop", startStopInputChange_cb);
@@ -294,14 +293,17 @@ function draw() {
 		updateThings();
 	}
 
+	push();
+	scale(SCALE, SCALE);
 	if (trackLargestThingEnabled) {
 		var largestThing = th[getLargestThingIndex()];
 		translate(getZoomedWidth() / 2 - largestThing.pos.x, getZoomedHeight() / 2 - largestThing.pos.y);
 	}
 
-	scale(SCALE, SCALE);
+
 	displayThings();
-	
+	pop();
+
 }
 
 function getLargestThingIndex() {
