@@ -12,6 +12,8 @@ var BOUNCE_FACTOR = 0.9;
 var HISTORY_LENGTH = 20;
 var SHOW_HISTORY = true;
 
+
+
 /* Notes
 *	-rotational inertia for a disk, I = 0.5 * m * r * r 
 *	-rotational momentu, L = I * angular_velocity
@@ -19,14 +21,13 @@ var SHOW_HISTORY = true;
 *	This is just a change to test my git settings - rocne 10/4/2016
 */
 
-function thing() {
+function thing(mass, pos, vel) {
 	// fields
 	this.angle = 0;
 	this.angularVelocity = 0.1;
-	this.mass = 2275 + Math.random() * 100;
-	this.pos = createVector(Math.floor(Math.random() * getZoomedWidth()), Math.floor(Math.random() * getZoomedHeight()));
-	this.vel = createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, 
-				Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL);	
+	this.mass = mass; //2275 + Math.random() * 100;
+	this.pos = pos; //createVector(Math.floor(Math.random() * getZoomedWidth()), Math.floor(Math.random() * getZoomedHeight()));
+	this.vel = vel; //createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL);	
 	this.isLocked = false;
 
 	this.history = [];
@@ -50,6 +51,12 @@ function thing() {
 		return dist;
 	
 	}
+	
+	this.toString = function() {
+		var str = "";
+		str += this.pos.toString();
+		return str;
+	}
 
 	this.accumulateForce = function(force) {
 		this.accumulatedForce.add(force);
@@ -57,7 +64,7 @@ function thing() {
 	
 	this.toggleLocked = function() {
 		this.isLocked = !this.isLocked;
-	}
+		}
 
 	this.applyAccumulatedForce = function() {
 		var accelarationMag = this.accumulatedForce.mag() / this.mass;

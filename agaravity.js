@@ -6,6 +6,12 @@ var SCALE = 1.0;
 
 var INITIAL_NUM_THINGS = 250;
 
+var RANDOM_MASS_CENTER = 2275;
+var RANDOM_MASS_RADIUS = 100;
+
+var RANDOM_VEL_CENTER = 0;
+var RANDOM_VEL_RADIUS = 25;
+
 // debugging vars
 var lastFrameTime = 0;
 var shouldLogFrameRate = false;
@@ -59,6 +65,16 @@ function createCheckboxInput(name, defaultValue, changeFunction) {
 }
 
 function mousePressed() {
+	if (mouseButton == RIGHT) {
+		rightClick();
+	} else if (mouseButton == LEFT) {
+		leftClick();
+	} else if (mouseButton == CENTER) {
+		centerClick();
+	}
+}
+
+function leftClick() {
 	var clicked = -1;
 	var mouseVect = createVector(mouseX / SCALE, mouseY / SCALE);
 
@@ -78,6 +94,18 @@ function mousePressed() {
 	if (clicked != -1) {
 		th[clicked].toggleLocked();
 	}
+}
+
+function rightClick() {
+	// TODO: implement ability to shoot things by clicking and dragging
+	console.log("rightClick hasn't been implemented");
+}
+
+function centerClick() {
+	// TODO: implement ability to use scroll wheel to change size of 
+	//	 the things that you shoot with left click. Might not belong
+	//	 in centerClick. Maybe there is another scroll event.
+	console.log("centerClick hasn't been implemented");
 }
 
 function createLabel(name) {
@@ -102,7 +130,6 @@ function createRangeInput(name, min, max, defaultValue, step, changeFunction) {
 	input.value = defaultValue;
 	input.onchange = changeFunction;
 	input.style.width = Math.floor(0.9 * WIDTH) + "px";
-	console.log(input.style.width);
 	inputs[name] = input;
 	
 	var label = createLabel(name);
@@ -165,11 +192,40 @@ function historyLengthChanged() {
 	this.readOut.innerHTML = this.value;
 }
 
+function randomMassCenterChanged() {
+	console.log("Random mass center changed to " + this.value);
+	RANDOM_MASS_CENTER = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
+function randomMassRadiusChanged() {
+	console.log("Random mass radius changed to " + this.value);
+	RANDOM_MASS_RADIUS = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
+function randomVelCenterChanged() {
+	console.log("Random vel center changed to " + this.value);
+	RANDOM_VEL_CENTER = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
+function randomVelRadiusChanged() {
+	console.log("Random vel radius changed to " + this.value);
+	RANDOM_VEL_RADIUS = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
 function createInputs() {
 	var div = document.createElement("DIV");
 
 	var startStopButton = createButtonInput("start/stop", startStopClicked);
 	var resetButton = createButtonInput("reset", resetClicked);
+	var randomMassCenter = createRangeInput("random mass center", 1, 5000, RANDOM_MASS_CENTER, 1, randomMassCenterChanged); 
+	var randomMassRadius = createRangeInput("random mass radius", 1, 500, RANDOM_MASS_RADIUS, 1, randomMassRadiusChanged);
+	var randomVelCenter = createRangeInput("random vel center", 0, 100, RANDOM_VEL_CENTER, 1, randomVelCenterChanged);
+	var randomVelRadius = createRangeInput("random vel radius", 0, 100, RANDOM_VEL_RADIUS, 1, randomVelRadiusChanged);
+
 	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
 	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceChanged);
 	var zoomInput = createRangeInput("zoom", 0.05, 2.5, 1.0, 0.01, updateZoom);
@@ -178,10 +234,13 @@ function createInputs() {
 	var enableShowHistory = createCheckboxInput("enable show history", SHOW_HISTORY, showHistoryChanged);	
 	var historyLength = createRangeInput("history length", 0, 100, HISTORY_LENGTH, 1, historyLengthChanged);
 
-	div.appendChild(startStopButton);
+	div.appendChild(randomMassCenter);
 	appendBR(div);
-	div.appendChild(resetButton);
+	div.appendChild(randomMassRadius);
 	appendBR(div);
+	div.appendChild(randomVelCenter);
+	appendBR(div);
+	div.appendChild(randomVelRadius);
 	appendBR(div);
 	div.appendChild(gravInput);
 	appendBR(div);
@@ -196,6 +255,9 @@ function createInputs() {
 	div.appendChild(enableShowHistory);	
 	appendBR(div);
 	div.appendChild(historyLength);
+	appendBR(div);
+	div.appendChild(startStopButton);
+	div.appendChild(resetButton);
 	document.body.appendChild(div);
 }
 
@@ -216,7 +278,20 @@ function setup() {
 
 function createThings(numberOfThings) {
 	for (var i = 0; i < numberOfThings; i++)
-		th.push(new thing);
+		th.push(new thing(randomMass(), randomPosition(), randomVelocity()));
+}
+
+function randomMass() {
+	return RANDOM_MASS_CENTER + (2 * RANDOM_MASS_RADIUS * Math.random()) - RANDOM_MASS_RADIUS;
+}
+
+function randomVelocity() {
+	return createVector(RANDOM_VEL_CENTER + (2 * RANDOM_VEL_RADIUS * Math.random()) - RANDOM_VEL_RADIUS,
+			    RANDOM_VEL_CENTER + (2 * RANDOM_VEL_RADIUS * Math.random()) - RANDOM_VEL_RADIUS);
+}
+
+function randomPosition() {
+	return createVector(Math.random() * getZoomedWidth(), Math.random() * getZoomedHeight());
 }
 
 function draw() {
