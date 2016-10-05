@@ -65,7 +65,7 @@ function createLabel(name) {
 	span.setAttribute("class", "input_label");
 	span.innerHTML = name;
 	label.appendChild(span);
-	label.appendChild(document.createElement("BR"));
+	appendBR(label);
 	return label;
 }
 
@@ -91,7 +91,7 @@ function createRangeInput(name, min, max, defaultValue, step, changeFunction) {
 	
 	label.appendChild(input);
 	label.appendChild(readOut);
-	label.appendChild(document.createElement("BR"));
+	appendBR(label);
 	return label;
 }
 
@@ -120,6 +120,10 @@ function enableBounceChanged() {
 	bounceEnabled = !bounceEnabled;
 }
 
+function showHistoryChanged() {
+	SHOW_HISTORY = !SHOW_HISTORY;
+}
+
 function updateZoom() {
 	SCALE = this.value;
 	this.readOut.innerHTML = this.value;
@@ -146,24 +150,31 @@ function createInputs() {
 	var zoomInput = createRangeInput("zoom", 0.05, 2.5, 1.0, 0.01, updateZoom);
 	var numElementsInput = createRangeInput("num things", 1, 1500, INITIAL_NUM_THINGS, 1, numThingsChanged);	
 	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN ZOOM = 1)", trackLargestThingEnabled, trackLargestThingEnabledChanged);
+	var enableShowHistory = createCheckboxInput("enable show history", SHOW_HISTORY, showHistoryChanged);	
+
 
 	div.appendChild(startStopButton);
-	div.appendChild(document.createElement("BR"));
+	appendBR(div);
 	div.appendChild(resetButton);
-	div.appendChild(document.createElement("BR"));
-	div.appendChild(document.createElement("BR"));
+	appendBR(div);
+	appendBR(div);
 	div.appendChild(gravInput);
-	div.appendChild(document.createElement("BR"));
+	appendBR(div);
 	div.appendChild(enableBounce);
-	div.appendChild(document.createElement("BR"));
+	appendBR(div);
 	div.appendChild(zoomInput);
-	div.appendChild(document.createElement("BR"));
+	appendBR(div);
 	div.appendChild(numElementsInput);
-	div.appendChild(document.createElement("BR"));
+	appendBR(div);
 	div.appendChild(enableTrackLargestThing);
-	div.appendChild(document.createElement("BR"));
+	appendBR(div);	
+	div.appendChild(enableShowHistory);	
 
 	document.body.appendChild(div);
+}
+
+function appendBR(element) {
+	element.appendChild(document.createElement("BR"));
 }
 
 function setup() {

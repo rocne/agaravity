@@ -7,6 +7,11 @@ var GRAV = 0.01;
 
 var MAX_RAND_VEL = 25;
 
+var BOUNCE_FACTOR = 0.9;
+
+var HISTORY_LENGTH = 20;
+var SHOW_HISTORY = true;
+
 /* Notes
 *	-rotational inertia for a disk, I = 0.5 * m * r * r 
 *	-rotational momentu, L = I * angular_velocity
@@ -22,6 +27,8 @@ function thing() {
 	this.pos = createVector(Math.floor(Math.random() * getZoomedWidth()), Math.floor(Math.random() * getZoomedHeight()));
 	this.vel = createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, 
 				Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL);	
+
+	this.history = [];
 
 	this.accumulatedForce = createVector(0, 0);
 	this.shouldBeDestroyed = false;
@@ -94,6 +101,7 @@ function thing() {
 	}
 
 	this.update = function() {
+		this.updateHistory();
 		this.updatePositionAndAngle();
 		if (bounceEnabled)
 			this.handleEdgeBounce();
@@ -107,18 +115,24 @@ function thing() {
 
 		// bounce the balls off the edges of the play area
 		if (this.pos.x - r <= 0 && this.vel.x < 0)
-			this.vel.x *= -1;
+			this.vel.x *= -BOUNCE_FACTOR;
 		if (this.pos.x >= w - r && this.vel.x > 0)
-			this.vel.x *= -1;
+			this.vel.x *= -BOUNCE_FACTOR;
 		if (this.pos.y - r <= 0 && this.vel.y < 0)
-			this.vel.y *= -1;
+			this.vel.y *= -BOUNCE_FACTOR;
 		if (this.pos.y >= h - r && this.vel.y > 0)
-			this.vel.y *= -1;
+			this.vel.y *= -BOUNCE_FACTOR;
 	}
 
 	this.updatePositionAndAngle = function() {
 		this.pos.add(this.vel);
 		this.angle += this.angularVelocity;
+	}
+	
+	this.updateHistory = function() {
+		this.history.push(this.pos.copy());
+		while(this.history.length > HISTORY_LENGTH)
+			this.history.shift();		
 	}
 	
 	this.show = function () {
@@ -138,6 +152,20 @@ function thing() {
 		
 		fill(255, 0, 0);		
 		ellipse(posIndicator.x, posIndicator.y, 2 * r * INDICATOR_SIZE_RATIO);
+
+		if (SHOW_HISTORY) {
+			for (var i = 0; i < this.history.length; i++) {
+				var framesSinceCapture = this.history.length - i;
+				var alpha = 1.0 / framesSinceCapture;
+				var r = 0;
+				var g = 128;
+				var b = 200;
+				var rgba = "rgba(" + r + "," + g +"," + b + "," + alpha + ")";
+				fill(rgba);
+
+				ellipse(this.history[i].x, this.history[i].y, (1 - i / this.history.length) * this.getRadius());
+			}
+		}
 	}
 
 }
