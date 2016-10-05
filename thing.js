@@ -95,7 +95,8 @@ function thing() {
 
 	this.update = function() {
 		this.updatePositionAndAngle();
-		this.handleEdgeBounce();
+		if (bounceEnabled)
+			this.handleEdgeBounce();
 	}
 
 	this.handleEdgeBounce = function() {

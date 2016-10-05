@@ -15,13 +15,13 @@ var th = Array();
 var inputs = {};
 
 var stopped = false;
-
-window.onload = function() {
-}
+var bounceEnabled = true;
 
 function resetClicked() {
 	th = [];
-	createThings(INITIAL_NUM_THINGS);			
+	createThings(INITIAL_NUM_THINGS);		
+	setWindowDimensions();
+	resizeCanvas(WIDTH, HEIGHT);	
 }
 
 function createButtonInput(name, clickedFunction) {
@@ -31,6 +31,20 @@ function createButtonInput(name, clickedFunction) {
 	input.innerHTML = name;
 	inputs[name] = input;
 	return input;
+}
+
+function createCheckboxInput(name, defaultValue, changeFunction) {
+	var label = document.createElement("LABEL");
+	label.setAttribute("for", name);
+	label.innerHTML = name;	
+
+	var input = document.createElement("INPUT");
+	input.setAttribute("type", "checkbox");
+	input.checked = defaultValue;
+	input.onchange = changeFunction;
+
+	label.appendChild(input);
+	return label;
 }
 
 function createRangeInput(name, min, max, defaultValue, step, changeFunction) {	
@@ -79,18 +93,25 @@ function setWindowDimensions() {
 		WIDTH = HEIGHT = 1080;
 }
 
+function enableBounceChanged() {
+	bounceEnabled = !bounceEnabled;
+}
+
 function createInputs() {
 	var div = document.createElement("DIV");
 
 	var startStopButton = createButtonInput("start/stop", startStopClicked);
 	var resetButton = createButtonInput("reset", resetClicked);
 	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
-
+	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceChanged);
+	
 	div.appendChild(startStopButton);
 	div.appendChild(document.createElement("BR"));
 	div.appendChild(resetButton);
 	div.appendChild(document.createElement("BR"));
 	div.appendChild(gravInput);
+	div.appendChild(document.createElement("BR"));
+	div.appendChild(enableBounce);
 	div.appendChild(document.createElement("BR"));
 
 	document.body.appendChild(div);
