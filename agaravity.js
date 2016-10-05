@@ -21,7 +21,13 @@ window.onload = function() {
 	WIDTH = window.innerWidth * 0.95;
 	
 	createButtonInput("start/stop", startStopClicked);
-	createRangeInput("grav", 0, 0.25, GRAV, updateGrav);
+	createButtonInput("reset", resetClicked);
+	createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
+}
+
+function resetClicked() {
+	th = [];
+	createThings(INITIAL_NUM_THINGS);			
 }
 
 function createButtonInput(name, clickedFunction) {
@@ -35,13 +41,13 @@ function createButtonInput(name, clickedFunction) {
 	document.body.appendChild(document.createElement("BR"));
 }
 
-function createRangeInput(name, min, max, defaultValue, changeFunction) {	
+function createRangeInput(name, min, max, defaultValue, step, changeFunction) {	
 	var input = document.createElement("INPUT");
 	input.setAttribute("name", name);
 	input.setAttribute("type", "range");
 	input.setAttribute("min", min);
 	input.setAttribute("max", max);
-	input.setAttribute("step", 0.005);
+	input.setAttribute("step", step);
 	input.setAttribute("defaultValue", defaultValue);
 	input.value = defaultValue;
 	input.onchange = changeFunction;
