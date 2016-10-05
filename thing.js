@@ -102,14 +102,17 @@ function thing() {
 	this.handleEdgeBounce = function() {
 		var r = this.getRadius();
 		
+		var h = HEIGHT / SCALE;
+		var w = WIDTH / SCALE;
+
 		// bounce the balls off the edges of the play area
 		if (this.pos.x - r <= 0 && this.vel.x < 0)
 			this.vel.x *= -1;
-		if (this.pos.x >= WIDTH - r && this.vel.x > 0)
+		if (this.pos.x >= w - r && this.vel.x > 0)
 			this.vel.x *= -1;
 		if (this.pos.y - r <= 0 && this.vel.y < 0)
 			this.vel.y *= -1;
-		if (this.pos.y >= HEIGHT - r && this.vel.y > 0)
+		if (this.pos.y >= h - r && this.vel.y > 0)
 			this.vel.y *= -1;
 	}
 

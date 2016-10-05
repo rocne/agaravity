@@ -2,6 +2,8 @@
 var WIDTH = 0;//2500;
 var HEIGHT = 0;//1400;
 
+var SCALE = 1.0;
+
 var INITIAL_NUM_THINGS = 250;
 
 // debugging vars
@@ -97,6 +99,11 @@ function enableBounceChanged() {
 	bounceEnabled = !bounceEnabled;
 }
 
+function updateZoom() {
+	SCALE = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
 function createInputs() {
 	var div = document.createElement("DIV");
 
@@ -104,7 +111,9 @@ function createInputs() {
 	var resetButton = createButtonInput("reset", resetClicked);
 	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
 	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceChanged);
+	var zoomInput = createRangeInput("zoom", 0.05, 5.0, 1.0, 0.01, updateZoom);
 	
+
 	div.appendChild(startStopButton);
 	div.appendChild(document.createElement("BR"));
 	div.appendChild(resetButton);
@@ -112,6 +121,8 @@ function createInputs() {
 	div.appendChild(gravInput);
 	div.appendChild(document.createElement("BR"));
 	div.appendChild(enableBounce);
+	div.appendChild(document.createElement("BR"));
+	div.appendChild(zoomInput);
 	div.appendChild(document.createElement("BR"));
 
 	document.body.appendChild(div);
@@ -139,7 +150,7 @@ function draw() {
 		logFrameRate();
 
 	background(25);
-	
+
 	fill(255);	
 	rect(10, 10, WIDTH -20, HEIGHT -20);
 
@@ -148,6 +159,7 @@ function draw() {
 		updateThings();
 	}
 
+	scale(SCALE, SCALE);
 	displayThings();
 }
 
