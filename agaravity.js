@@ -1,6 +1,6 @@
 // View values
 var WIDTH = 0;
-var HEIGHT = 0;/
+var HEIGHT = 0;
 var SCALE = 1.0;
 
 
@@ -146,17 +146,6 @@ function createRangeInput(name, min, max, defaultValue, step, changeFunction) {
 	return label;
 }
 
-function startStopClicked() {
-	stopped = ! stopped;
-}
-
-function updateGrav() {
-	console.log(inputs);
-	var value = inputs["grav"].value;
-	GRAV = value;	
-	inputs["grav"].readOut.innerHTML = value;
-}
-
 function setWindowDimensions() {
 	HEIGHT = window.innerHeight * 0.95;
 	WIDTH = window.innerWidth * 0.95;
@@ -165,25 +154,36 @@ function setWindowDimensions() {
 		WIDTH = HEIGHT = 1080;
 }
 
-function enableBounceChanged() {
+function startStopInputChange_cb() {
+	stopped = ! stopped;
+}
+
+function gravInputChange_cb() {
+	console.log(inputs);
+	var value = inputs["grav"].value;
+	GRAV = value;	
+	inputs["grav"].readOut.innerHTML = value;
+}
+
+function enableBounceInputChange_cb() {
 	bounceEnabled = !bounceEnabled;
 }
 
-function showHistoryChanged() {
+function showHistoryChange_cb() {
 	SHOW_HISTORY = !SHOW_HISTORY;
 }
 
-function updateZoom() {
+function zoomInputChange_cb() {
 	SCALE = this.value;
 	this.readOut.innerHTML = this.value;
 }
 
-function numThingsChanged() {
+function numThingsInputChange_cb() {
 	INITIAL_NUM_THINGS = this.value;
 	this.readOut.innerHTML = this.value;
 }
 
-function trackLargestThingEnabledChanged() {
+function trackLargestThingInputChange_cb() {
 	// TODO: when tracking is enabled, apply forcer with arrow keys
 	//	 maybe scroll wheel to change strength
 	trackLargestThingEnabled = ! trackLargestThingEnabled
@@ -191,30 +191,30 @@ function trackLargestThingEnabledChanged() {
 	console.log(trackLargestThingEnabled);
 }
 
-function historyLengthChanged() {
+function historyLengthChange_cb() {
 	HISTORY_LENGTH = this.value;
 	this.readOut.innerHTML = this.value;
 }
 
-function randomMassCenterChanged() {
+function randomMassCenterInputChange_cb() {
 	console.log("Random mass center changed to " + this.value);
 	RANDOM_MASS_CENTER = this.value;
 	this.readOut.innerHTML = this.value;
 }
 
-function randomMassRadiusChanged() {
+function randomMassRadiusInputChange_cb() {
 	console.log("Random mass radius changed to " + this.value);
 	RANDOM_MASS_RADIUS = this.value;
 	this.readOut.innerHTML = this.value;
 }
 
-function randomVelCenterChanged() {
+function randomVelCenterInputChange_cb() {
 	console.log("Random vel center changed to " + this.value);
 	RANDOM_VEL_CENTER = this.value;
 	this.readOut.innerHTML = this.value;
 }
 
-function randomVelRadiusChanged() {
+function randomVelRadiusInputChange_cb() {
 	console.log("Random vel radius changed to " + this.value);
 	RANDOM_VEL_RADIUS = this.value;
 	this.readOut.innerHTML = this.value;
@@ -223,20 +223,20 @@ function randomVelRadiusChanged() {
 function createInputs() {
 	var div = document.createElement("DIV");
 
-	var startStopButton = createButtonInput("start/stop", startStopClicked);
+	var startStopButton = createButtonInput("start/stop", startStopInputChange_cb);
 	var resetButton = createButtonInput("reset", resetClicked);
-	var randomMassCenter = createRangeInput("random mass center", 1, 5000, RANDOM_MASS_CENTER, 1, randomMassCenterChanged); 
-	var randomMassRadius = createRangeInput("random mass radius", 1, 500, RANDOM_MASS_RADIUS, 1, randomMassRadiusChanged);
-	var randomVelCenter = createRangeInput("random vel center", 0, 100, RANDOM_VEL_CENTER, 1, randomVelCenterChanged);
-	var randomVelRadius = createRangeInput("random vel radius", 0, 100, RANDOM_VEL_RADIUS, 1, randomVelRadiusChanged);
+	var randomMassCenter = createRangeInput("random mass center", 1, 5000, RANDOM_MASS_CENTER, 1, randomMassCenterInputChange_cb); 
+	var randomMassRadius = createRangeInput("random mass radius", 1, 500, RANDOM_MASS_RADIUS, 1, randomMassRadiusInputChange_cb);
+	var randomVelCenter = createRangeInput("random vel center", 0, 100, RANDOM_VEL_CENTER, 1, randomVelCenterInputChange_cb);
+	var randomVelRadius = createRangeInput("random vel radius", 0, 100, RANDOM_VEL_RADIUS, 1, randomVelRadiusInputChange_cb);
 
-	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, updateGrav);
-	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceChanged);
-	var zoomInput = createRangeInput("zoom", 0.05, 2.5, 1.0, 0.01, updateZoom);
-	var numElementsInput = createRangeInput("num things", 1, 1500, INITIAL_NUM_THINGS, 1, numThingsChanged);	
-	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN SCALE = 1)", trackLargestThingEnabled, trackLargestThingEnabledChanged);
-	var enableShowHistory = createCheckboxInput("enable show history", SHOW_HISTORY, showHistoryChanged);	
-	var historyLength = createRangeInput("history length", 0, 100, HISTORY_LENGTH, 1, historyLengthChanged);
+	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, gravInputChange_cb);
+	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceInputChange_cb);
+	var zoomInput = createRangeInput("zoom", 0.05, 2.5, 1.0, 0.01, zoomInputChange_cb);
+	var numElementsInput = createRangeInput("num things", 1, 1500, INITIAL_NUM_THINGS, 1, numThingsInputChange_cb);	
+	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN SCALE = 1)", trackLargestThingEnabled, trackLargestThingInputChange_cb);
+	var enableShowHistory = createCheckboxInput("enable show history", SHOW_HISTORY, showHistoryChange_cb);	
+	var historyLength = createRangeInput("history length", 0, 100, HISTORY_LENGTH, 1, historyLengthChange_cb);
 
 	div.appendChild(randomMassCenter);
 	appendBR(div);
