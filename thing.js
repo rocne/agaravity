@@ -153,19 +153,26 @@ function thing(mass, pos, vel) {
 		var r = Math.floor(this.getRadius());
 		
 		var r_indicator = r * (1 - INDICATOR_SIZE_RATIO);
-		var indicatorOffset = createVector(Math.cos(this.angle), Math.sin(this.angle)).mult(r_indicator);
-		var posIndicator = p5.Vector.add(this.pos, indicatorOffset);
-	
-
-		fill(20);
-		ellipse(this.pos.x, this.pos.y, 2 * r);
 		
+		push();
+			translate(this.pos.x, this.pos.y);
 
-		fill(200);
-		ellipse(this.pos.x, this.pos.y, r);	
-		
-		fill(255, 0, 0);		
-		ellipse(posIndicator.x, posIndicator.y, 2 * r * INDICATOR_SIZE_RATIO);
+			fill(20);
+			ellipse(0, 0, 2 * r);
+			
+
+			fill(200);
+			ellipse(0, 0, r);	
+			
+			push();
+				fill(255, 0, 0);	
+				rotate(this.angle);
+
+				translate(0, r_indicator);	
+				console.log(this.angle);
+				ellipse(0, 0, 2 * r * INDICATOR_SIZE_RATIO);
+			pop();
+		pop();
 
 		if (SHOW_HISTORY) {
 			for (var i = 0; i < this.history.length; i++) {
@@ -176,8 +183,10 @@ function thing(mass, pos, vel) {
 				var b = 200;
 				var rgba = "rgba(" + r + "," + g +"," + b + "," + alpha + ")";
 				fill(rgba);
-
-				ellipse(this.history[i].x, this.history[i].y, (1 - i / this.history.length) * this.getRadius());
+				push();
+					translate(this.history[i].x, this.history[i].y);
+					ellipse(0, 0, (1 - i / this.history.length) * this.getRadius());
+				pop();
 			}
 		}
 	}
