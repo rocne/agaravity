@@ -19,6 +19,14 @@ var inputs = {};
 var stopped = false;
 var bounceEnabled = true;
 
+function getZoomedWidth() {
+	return WIDTH / SCALE;
+}
+
+function getZoomedHeight() {
+	return HEIGHT / SCALE;
+}
+
 function resetClicked() {
 	th = [];
 	createThings(INITIAL_NUM_THINGS);		

@@ -19,7 +19,7 @@ function thing() {
 	this.angle = 0;
 	this.angularVelocity = 0.1;
 	this.mass = 2275 + Math.random() * 100;
-	this.pos = createVector(Math.floor(Math.random() * WIDTH), Math.floor(Math.random() * HEIGHT));
+	this.pos = createVector(Math.floor(Math.random() * getZoomedWidth()), Math.floor(Math.random() * getZoomedHeight()));
 	this.vel = createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, 
 				Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL);	
 
@@ -102,8 +102,8 @@ function thing() {
 	this.handleEdgeBounce = function() {
 		var r = this.getRadius();
 		
-		var h = HEIGHT / SCALE;
-		var w = WIDTH / SCALE;
+		var h = getZoomedHeight();
+		var w = getZoomedWidth();
 
 		// bounce the balls off the edges of the play area
 		if (this.pos.x - r <= 0 && this.vel.x < 0)
