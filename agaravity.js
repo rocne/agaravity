@@ -140,6 +140,11 @@ function trackLargestThingEnabledChanged() {
 	console.log(trackLargestThingEnabled);
 }
 
+function historyLengthChanged() {
+	HISTORY_LENGTH = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
 function createInputs() {
 	var div = document.createElement("DIV");
 
@@ -151,7 +156,7 @@ function createInputs() {
 	var numElementsInput = createRangeInput("num things", 1, 1500, INITIAL_NUM_THINGS, 1, numThingsChanged);	
 	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN ZOOM = 1)", trackLargestThingEnabled, trackLargestThingEnabledChanged);
 	var enableShowHistory = createCheckboxInput("enable show history", SHOW_HISTORY, showHistoryChanged);	
-
+	var historyLength = createRangeInput("history length", 0, 100, HISTORY_LENGTH, 1, historyLengthChanged);
 
 	div.appendChild(startStopButton);
 	appendBR(div);
@@ -169,7 +174,8 @@ function createInputs() {
 	div.appendChild(enableTrackLargestThing);
 	appendBR(div);	
 	div.appendChild(enableShowHistory);	
-
+	appendBR(div);
+	div.appendChild(historyLength);
 	document.body.appendChild(div);
 }
 
