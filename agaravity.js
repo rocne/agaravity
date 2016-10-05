@@ -36,23 +36,23 @@ function getZoomedHeight() {
 	return HEIGHT / SCALE;
 }
 
-function resetClicked() {
+function resetInputChange_cb() {
 	setWindowDimensions();
 	th = [];
 	createThings(INITIAL_NUM_THINGS);		
 	resizeCanvas(WIDTH, HEIGHT);	
 }
 
-function createButtonInput(name, clickedFunction) {
+function createButtonInput(container, name, clickedFunction) {
 	var input = document.createElement("BUTTON");
 	input.setAttribute("name", name);
 	input.onclick = clickedFunction;
 	input.innerHTML = name;
 	inputs[name] = input;
-	return input;
+	container.appendChild(input);
 }
 
-function createCheckboxInput(name, defaultValue, changeFunction) {
+function createCheckboxInput(container, name, defaultValue, changeFunction) {
 	var label = createLabel(name);
 
 	var input = document.createElement("INPUT");
@@ -63,7 +63,8 @@ function createCheckboxInput(name, defaultValue, changeFunction) {
 	label.appendChild(input);
 	label.appendChild(document.createElement("BR"));
 
-	return label;
+	container.appendChild(label);
+	appendBR(container);
 }
 
 function mousePressed() {
@@ -121,7 +122,7 @@ function createLabel(name) {
 	return label;
 }
 
-function createRangeInput(name, min, max, defaultValue, step, changeFunction) {	
+function createRangeInput(container, name, min, max, defaultValue, step, changeFunction) {	
 	var input = document.createElement("INPUT");
 	input.setAttribute("name", name);
 	input.setAttribute("type", "range");
@@ -142,8 +143,8 @@ function createRangeInput(name, min, max, defaultValue, step, changeFunction) {
 	
 	label.appendChild(input);
 	label.appendChild(readOut);
-	appendBR(label);
-	return label;
+	container.appendChild(label);
+	appendBR(container);
 }
 
 function setWindowDimensions() {
@@ -221,48 +222,27 @@ function randomVelRadiusInputChange_cb() {
 }
 
 function createInputs() {
-	var div = document.createElement("DIV");
+	var inputContainer = document.createElement("DIV");
 
-	var startStopButton = createButtonInput("start/stop", startStopInputChange_cb);
-	var resetButton = createButtonInput("reset", resetClicked);
-	var randomMassCenter = createRangeInput("random mass center", 1, 5000, RANDOM_MASS_CENTER, 1, randomMassCenterInputChange_cb); 
-	var randomMassRadius = createRangeInput("random mass radius", 1, 500, RANDOM_MASS_RADIUS, 1, randomMassRadiusInputChange_cb);
-	var randomVelCenter = createRangeInput("random vel center", 0, 100, RANDOM_VEL_CENTER, 1, randomVelCenterInputChange_cb);
-	var randomVelRadius = createRangeInput("random vel radius", 0, 100, RANDOM_VEL_RADIUS, 1, randomVelRadiusInputChange_cb);
+	//					 container,		 name					min 	max		default 			step 	callback
+	createRangeInput	(inputContainer, "random mass center", 	1, 		5000, 	RANDOM_MASS_CENTER, 1, 		randomMassCenterInputChange_cb); 
+	createRangeInput	(inputContainer, "random mass radius",	1, 		500, 	RANDOM_MASS_RADIUS, 1, 		randomMassRadiusInputChange_cb);
+	createRangeInput	(inputContainer, "random vel center", 	0, 		100, 	RANDOM_VEL_CENTER, 	1, 		randomVelCenterInputChange_cb);
+	createRangeInput	(inputContainer, "random vel radius", 	0, 		100, 	RANDOM_VEL_RADIUS, 	1, 		randomVelRadiusInputChange_cb);
+	createRangeInput	(inputContainer, "grav", 				0, 		0.25, 	GRAV, 				0.005, 	gravInputChange_cb);
+	createRangeInput	(inputContainer, "history length", 		0, 		100, 	HISTORY_LENGTH, 	1, 		historyLengthChange_cb);
+	createRangeInput	(inputContainer, "zoom", 				0.05, 	2.5, 	1.0, 				0.01, 	zoomInputChange_cb);
+	createRangeInput	(inputContainer, "num things", 			1, 		1500, 	INITIAL_NUM_THINGS, 1, 		numThingsInputChange_cb);
 
-	var gravInput = createRangeInput("grav", 0, 0.25, GRAV, 0.005, gravInputChange_cb);
-	var enableBounce = createCheckboxInput("enable bounce", bounceEnabled, enableBounceInputChange_cb);
-	var zoomInput = createRangeInput("zoom", 0.05, 2.5, 1.0, 0.01, zoomInputChange_cb);
-	var numElementsInput = createRangeInput("num things", 1, 1500, INITIAL_NUM_THINGS, 1, numThingsInputChange_cb);	
-	var enableTrackLargestThing = createCheckboxInput("track largest thing (ONLY WORKS WHEN SCALE = 1)", trackLargestThingEnabled, trackLargestThingInputChange_cb);
-	var enableShowHistory = createCheckboxInput("enable show history", SHOW_HISTORY, showHistoryChange_cb);	
-	var historyLength = createRangeInput("history length", 0, 100, HISTORY_LENGTH, 1, historyLengthChange_cb);
+	createCheckboxInput	(inputContainer, "enable bounce", 		bounceEnabled, enableBounceInputChange_cb);
+	createCheckboxInput	(inputContainer, "track largest thing (ONLY WORKS WHEN SCALE = 1)", trackLargestThingEnabled, trackLargestThingInputChange_cb);
+	createCheckboxInput	(inputContainer, "enable show history", SHOW_HISTORY, showHistoryChange_cb);	
+	
+	createButtonInput	(inputContainer, "start/stop", startStopInputChange_cb);
+	createButtonInput	(inputContainer, "reset", resetInputChange_cb);
 
-	div.appendChild(randomMassCenter);
-	appendBR(div);
-	div.appendChild(randomMassRadius);
-	appendBR(div);
-	div.appendChild(randomVelCenter);
-	appendBR(div);
-	div.appendChild(randomVelRadius);
-	appendBR(div);
-	div.appendChild(gravInput);
-	appendBR(div);
-	div.appendChild(enableBounce);
-	appendBR(div);
-	div.appendChild(zoomInput);
-	appendBR(div);
-	div.appendChild(numElementsInput);
-	appendBR(div);
-	div.appendChild(enableTrackLargestThing);
-	appendBR(div);	
-	div.appendChild(enableShowHistory);	
-	appendBR(div);
-	div.appendChild(historyLength);
-	appendBR(div);
-	div.appendChild(startStopButton);
-	div.appendChild(resetButton);
-	document.body.appendChild(div);
+	document.body.appendChild(inputContainer);
+
 }
 
 function appendBR(element) {
@@ -370,13 +350,6 @@ function logFrameRate() {
 	console.log("Time since last frame: " + currTime - lastFrameTime);
 	console.log("Frame rate: " + 1000.0 / (currTime - lastFrameTime) + "\n\n");
 	lastFrameTime = currTime;
-}
-
-function stopAtFrameCount(count) {
-	fooCount++;
-	if (fooCount > count)
-		while(true)
-			;
 }
 
 function getTime() {
