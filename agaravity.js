@@ -20,6 +20,7 @@ var fooCount = 0;
 
 // sim variables
 var th = Array();
+var TIME_SCALE = 1.0;
 
 // inputs and input state values
 var inputs = {};
@@ -143,6 +144,8 @@ function createRangeInput(container, name, min, max, defaultValue, step, changeF
 	
 	label.appendChild(input);
 	label.appendChild(readOut);
+	appendBR(label);
+
 	container.appendChild(label);
 	appendBR(container);
 }
@@ -220,6 +223,12 @@ function randomVelRadiusInputChange_cb() {
 	this.readOut.innerHTML = this.value;
 }
 
+function timeScaleInputChange_cb() {
+	console.log("Time scale changed to " + this.value);
+	TIME_SCALE = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
 function createInputs() {
 	var inputContainer = document.createElement("DIV");
 
@@ -229,9 +238,10 @@ function createInputs() {
 	createRangeInput	(inputContainer, "random vel center", 	0, 		100, 	RANDOM_VEL_CENTER, 	1, 		randomVelCenterInputChange_cb);
 	createRangeInput	(inputContainer, "random vel radius", 	0, 		100, 	RANDOM_VEL_RADIUS, 	1, 		randomVelRadiusInputChange_cb);
 	createRangeInput	(inputContainer, "grav", 				0, 		0.25, 	GRAV, 				0.005, 	gravInputChange_cb);
-	createRangeInput	(inputContainer, "history length", 		0, 		100, 	HISTORY_LENGTH, 	1, 		historyLengthChange_cb);
+	createRangeInput	(inputContainer, "history length", 			0, 		100, 	HISTORY_LENGTH, 	1, 		historyLengthChange_cb);
 	createRangeInput	(inputContainer, "zoom", 				0.05, 	2.5, 	1.0, 				0.01, 	zoomInputChange_cb);
-	createRangeInput	(inputContainer, "num things", 			1, 		1500, 	INITIAL_NUM_THINGS, 1, 		numThingsInputChange_cb);
+	createRangeInput	(inputContainer, "num things", 				1, 		1500, 	INITIAL_NUM_THINGS, 1, 		numThingsInputChange_cb);
+	createRangeInput	(inputContainer, "time scale",		0.1,		2.5,	TIME_SCALE,	0.005,	timeScaleInputChange_cb);	
 
 	createCheckboxInput	(inputContainer, "enable bounce", 		bounceEnabled, enableBounceInputChange_cb);
 	createCheckboxInput	(inputContainer, "track largest thing", trackLargestThingEnabled, trackLargestThingInputChange_cb);

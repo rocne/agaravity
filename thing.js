@@ -138,8 +138,8 @@ function thing(mass, pos, vel) {
 
 	this.updatePositionAndAngle = function() {
 		if (!this.isLocked) {
-			this.pos.add(this.vel);
-			this.angle += this.angularVelocity;
+			this.pos.add(p5.Vector.mult(this.vel, TIME_SCALE));
+			this.angle += this.angularVelocity * TIME_SCALE;
 		}
 	}
 	
@@ -169,7 +169,6 @@ function thing(mass, pos, vel) {
 				rotate(this.angle);
 
 				translate(0, r_indicator);	
-				console.log(this.angle);
 				ellipse(0, 0, 2 * r * INDICATOR_SIZE_RATIO);
 			pop();
 		pop();
@@ -182,8 +181,8 @@ function thing(mass, pos, vel) {
 				var g = 128;
 				var b = 200;
 				var rgba = "rgba(" + r + "," + g +"," + b + "," + alpha + ")";
-				fill(rgba);
 				push();
+					fill(rgba);
 					translate(this.history[i].x, this.history[i].y);
 					ellipse(0, 0, (1 - i / this.history.length) * this.getRadius());
 				pop();
