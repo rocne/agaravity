@@ -233,11 +233,11 @@ function createInputs() {
 	var inputContainer = document.createElement("DIV");
 
 	//					 container,		 name					min 	max		default 			step 	callback
-	createRangeInput	(inputContainer, "random mass center", 	1, 		5000, 	RANDOM_MASS_CENTER, 1, 		randomMassCenterInputChange_cb); 
-	createRangeInput	(inputContainer, "random mass radius",	1, 		500, 	RANDOM_MASS_RADIUS, 1, 		randomMassRadiusInputChange_cb);
-	createRangeInput	(inputContainer, "random vel center", 	0, 		100, 	RANDOM_VEL_CENTER, 	1, 		randomVelCenterInputChange_cb);
-	createRangeInput	(inputContainer, "random vel radius", 	0, 		100, 	RANDOM_VEL_RADIUS, 	1, 		randomVelRadiusInputChange_cb);
-	createRangeInput	(inputContainer, "grav", 				0, 		0.25, 	GRAV, 				0.005, 	gravInputChange_cb);
+	createRangeInput	(inputContainer, "random mass base", 	1, 		5000, 	RANDOM_MASS_CENTER, 1, 		randomMassCenterInputChange_cb); 
+	createRangeInput	(inputContainer, "random mass range",	1, 		500, 	RANDOM_MASS_RADIUS, 1, 		randomMassRadiusInputChange_cb);
+	createRangeInput	(inputContainer, "random vel base", 	0, 		100, 	RANDOM_VEL_CENTER, 	1, 		randomVelCenterInputChange_cb);
+	createRangeInput	(inputContainer, "random vel range", 	0, 		100, 	RANDOM_VEL_RADIUS, 	1, 		randomVelRadiusInputChange_cb);
+	createRangeInput	(inputContainer, "grav", 				0, 		2, 	GRAV, 				0.0001, 	gravInputChange_cb);
 	createRangeInput	(inputContainer, "history length", 			0, 		100, 	HISTORY_LENGTH, 	1, 		historyLengthChange_cb);
 	createRangeInput	(inputContainer, "zoom", 				0.05, 	2.5, 	1.0, 				0.01, 	zoomInputChange_cb);
 	createRangeInput	(inputContainer, "num things", 				1, 		1500, 	INITIAL_NUM_THINGS, 1, 		numThingsInputChange_cb);
