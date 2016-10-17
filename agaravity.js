@@ -199,6 +199,16 @@ function historyLengthChange_cb() {
 	this.readOut.innerHTML = this.value;
 }
 
+function historyAlphaCutoffThreshold_cb() {
+	HISTORY_ALPHA_CUTOFF_THRESHOLD = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
+function historyAlphaLevel_cb() {
+	HISTORY_ALPHA = this.value;
+	this.readOut.innerHTML = this.value;
+}
+
 function randomMassCenterInputChange_cb() {
 	console.log("Random mass center changed to " + this.value);
 	RANDOM_MASS_CENTER = this.value;
@@ -239,6 +249,14 @@ function createInputs() {
 	createRangeInput	(inputContainer, "random vel range", 	0, 		100, 	RANDOM_VEL_RADIUS, 	1, 		randomVelRadiusInputChange_cb);
 	createRangeInput	(inputContainer, "grav", 				0, 		2, 	GRAV, 				0.0001, 	gravInputChange_cb);
 	createRangeInput	(inputContainer, "history length", 			0, 		100, 	HISTORY_LENGTH, 	1, 		historyLengthChange_cb);
+
+	createRangeInput	(inputContainer, "history alpha",		0.5,	1.0,	HISTORY_ALPHA,
+		0.1, 	historyAlphaLevel_cb);
+
+	createRangeInput	(inputContainer, "history alpha cutoff threshold", 
+																0.0, 	1.0, 	HISTORY_ALPHA_CUTOFF_THRESHOLD,
+		0.05, 	historyAlphaCutoffThreshold_cb);
+
 	createRangeInput	(inputContainer, "zoom", 				0.05, 	2.5, 	1.0, 				0.01, 	zoomInputChange_cb);
 	createRangeInput	(inputContainer, "num things", 				1, 		1500, 	INITIAL_NUM_THINGS, 1, 		numThingsInputChange_cb);
 	createRangeInput	(inputContainer, "time scale",		0.1,		2.5,	TIME_SCALE,	0.005,	timeScaleInputChange_cb);	
