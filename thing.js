@@ -217,7 +217,7 @@ function thing(mass, pos, vel) {
 					var orbitBodyColor = "rgb(255, 0, 0)";
 					
 					rotate(this.angle);
-					translate(0, r_indicator);
+					translate(0, r_indicator - INDICATOR_SIZE_RATIO * radius);
 					fill(orbitBodyColor);
 					ellipse(0, 0, 2 * radius * INDICATOR_SIZE_RATIO);
 				pop();
