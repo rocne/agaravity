@@ -4,6 +4,7 @@ agaravity is a gravity simulator. The original concept was a clone of [agar.io](
 ## Contributors
 
 - Rocne K. Scribner <rocne.ks@gmail.com>
+- Andrew Reese <awrees@cs.uw.edu>
 
 ## Licensed & Copyright
 
