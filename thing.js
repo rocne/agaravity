@@ -10,6 +10,8 @@ var MAX_RAND_VEL = 25;
 var BOUNCE_FACTOR = 0.9;
 
 var HISTORY_LENGTH = 20;
+var HISTORY_ALPHA = 0.5;
+var HISTORY_ALPHA_CUTOFF_THRESHOLD = 0.05;
 var SHOW_HISTORY = true;
 
 
@@ -144,50 +146,83 @@ function thing(mass, pos, vel) {
 	}
 	
 	this.updateHistory = function() {
-		this.history.push(this.pos.copy());
-		while(this.history.length > HISTORY_LENGTH)
-			this.history.shift();		
+		this.history.unshift(this.pos.copy());		// insert at front
+		if (this.history.length > HISTORY_LENGTH) {
+			this.history.pop();						// remove from rear
+		}
 	}
 	
 	this.show = function () {
-		var r = Math.floor(this.getRadius());
-		
-		var r_indicator = r * (1 - INDICATOR_SIZE_RATIO);
+		var radius = Math.floor(this.getRadius());
+		var r_indicator = radius * (1 - INDICATOR_SIZE_RATIO);
+
+		// TODO: recommend moving color constant definitions either here or define them at the top of this script.
 		
 		push();
-			translate(this.pos.x, this.pos.y);
+			if (SHOW_HISTORY) {
+				// set history color
+				var red = 0;
+				var green = 128;
+				var blue = 200;
+				var historyColor;
+				
+				// set alpha vars
+				var alpha = HISTORY_ALPHA;
+				var alphaStep = alpha / this.history.length;
 
-			fill(20);
-			ellipse(0, 0, 2 * r);
-			
+				for (var i = 0; i < this.history.length; i++) {
+					alpha -= alphaStep;
+					
+					// check threshold
+					if (alpha < HISTORY_ALPHA_CUTOFF_THRESHOLD) {
+						break;
+					}
 
-			fill(200);
-			ellipse(0, 0, r);	
-			
+					// draw history disk
+					push();
+						historyColor = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
+
+						noStroke();	// no outlines in history/tail?  preference call
+						translate(this.history[i].x, this.history[i].y);
+						fill(historyColor);
+						ellipse(0, 0, (1 - i / this.history.length) * this.getRadius());
+					pop();
+				}
+
+			}
+
+			// draw current thing
 			push();
-				fill(255, 0, 0);	
-				rotate(this.angle);
+				translate(this.pos.x, this.pos.y);
 
-				translate(0, r_indicator);	
-				ellipse(0, 0, 2 * r * INDICATOR_SIZE_RATIO);
+				// draw large "orbit" disc
+				push();
+					var gsl = 128; // greyscale level
+					// and use rgba so we can use alpha channel
+					var diskColor = "rgba(" + gsl + "," + gsl + "," + gsl + "," + 0.5 + ")"
+
+					noStroke(); // no outline on disk?  preference call
+					fill(diskColor);
+					ellipse(0, 0, 2 * r_indicator);
+				pop();
+				
+				// draw the actual "thing"
+				push();
+					fill(64);
+					ellipse(0, 0, radius);
+				pop();
+				
+				// draw orbiting body
+				push();
+					var orbitBodyColor = "rgb(255, 0, 0)";
+					
+					rotate(this.angle);
+					translate(0, r_indicator);
+					fill(orbitBodyColor);
+					ellipse(0, 0, 2 * radius * INDICATOR_SIZE_RATIO);
+				pop();
 			pop();
 		pop();
-
-		if (SHOW_HISTORY) {
-			for (var i = 0; i < this.history.length; i++) {
-				var framesSinceCapture = this.history.length - i;
-				var alpha = 1.0 / framesSinceCapture;
-				var r = 0;
-				var g = 128;
-				var b = 200;
-				var rgba = "rgba(" + r + "," + g +"," + b + "," + alpha + ")";
-				push();
-					fill(rgba);
-					translate(this.history[i].x, this.history[i].y);
-					ellipse(0, 0, (1 - i / this.history.length) * this.getRadius());
-				pop();
-			}
-		}
 	}
 
 }
