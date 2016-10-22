@@ -16,6 +16,7 @@ var RANDOM_VEL_RADIUS = 25;
 // debugging vars
 var lastFrameTime = 0;
 var shouldLogFrameRate = false;
+
 var fooCount = 0;
 
 // sim variables
@@ -28,6 +29,7 @@ var inputs = {};
 var stopped = false;
 var bounceEnabled = true;
 var trackLargestThingEnabled = false;
+var showFrameRate = true;
 
 function getZoomedWidth() {
 	return WIDTH / SCALE;
@@ -176,6 +178,11 @@ function showHistoryChange_cb() {
 	SHOW_HISTORY = !SHOW_HISTORY;
 }
 
+function showDisplayRate_cb() {
+	showFrameRate = !showFrameRate;
+	console.log("showFrameRate=" + showFrameRate);
+}
+
 function zoomInputChange_cb() {
 	SCALE = this.value;
 	this.readOut.innerHTML = this.value;
@@ -263,7 +270,8 @@ function createInputs() {
 
 	createCheckboxInput	(inputContainer, "enable bounce", 		bounceEnabled, enableBounceInputChange_cb);
 	createCheckboxInput	(inputContainer, "track largest thing", trackLargestThingEnabled, trackLargestThingInputChange_cb);
-	createCheckboxInput	(inputContainer, "enable show history", SHOW_HISTORY, showHistoryChange_cb);	
+	createCheckboxInput	(inputContainer, "enable show history", SHOW_HISTORY, 	showHistoryChange_cb);
+	createCheckboxInput (inputContainer, "show framerate",		showFrameRate, 		showDisplayRate_cb);
 	
 	createButtonInput	(inputContainer, "start/stop", startStopInputChange_cb);
 	createButtonInput	(inputContainer, "reset", resetInputChange_cb);
@@ -314,8 +322,9 @@ function randomPosition() {
 function draw() {
 	fooCount++;
 	
-	if (shouldLogFrameRate)
+	if (shouldLogFrameRate) {
 		logFrameRate();
+	}
 
 	background(25);
 
@@ -336,8 +345,22 @@ function draw() {
 
 
 	displayThings();
+	displayFrameRate();
 	pop();
+}
 
+function displayFrameRate() {
+	if (showFrameRate) {
+		push();
+		noStroke();
+		fill('rgba(0,0,0,0.25)');
+		rect(15, 15, 250, 50);
+		
+		fill(0,255,51);
+		textSize(32);
+		text("framerate: " + round(frameRate() * 10.0) / 10, 20, 50);
+		pop();
+	}
 }
 
 function getLargestThingIndex() {
@@ -382,10 +405,7 @@ function handleInteractions() {
 }
 
 function logFrameRate() {
-	var currTime = getTime();
-	console.log("Time since last frame: " + currTime - lastFrameTime);
-	console.log("Frame rate: " + 1000.0 / (currTime - lastFrameTime) + "\n\n");
-	lastFrameTime = currTime;
+	console.log("Frame rate: " + frameRate());
 }
 
 function getTime() {
