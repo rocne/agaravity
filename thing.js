@@ -66,7 +66,7 @@ function thing(mass, pos, vel) {
 	
 	this.toggleLocked = function() {
 		this.isLocked = !this.isLocked;
-		}
+	}
 
 	this.applyAccumulatedForce = function() {
 		var accelarationMag = this.accumulatedForce.mag() / this.mass;
@@ -86,6 +86,15 @@ function thing(mass, pos, vel) {
 	}
 
 	this.getGravitationalForce = function(otherThing) {
+		/*
+		F = G * m_1 * m_2 / r^2, where:
+
+			F = total applied force
+			G = Gravity constant
+			m_1 = mass of first object, (this in our case)
+			m_2 = mass of second object, (otherThing)
+			r = distance between m_1 and m_2
+		*/ 
 		var r = this.distanceTo(otherThing);
 		var grav = GRAV * this.mass * otherThing.mass / (r * r);
 		var gravVector = p5.Vector.sub(otherThing.pos, this.pos);
