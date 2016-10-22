@@ -285,6 +285,12 @@ function setup() {
 
 	lastFrameTime = getTime();
 	imageMode(CORNER);
+
+	// so radius calculation (thing.getRadius() translates to actual drawn radius
+	// this allows collisions to look natural (i.e. dark part of things collide and merge)
+	// indicator was not adjusted because I think it looks cool in the center dark area and it
+	// makes the things look like they have a little atmosphere or something
+	ellipseMode(RADIUS);
 }
 
 function createThings(numberOfThings) {
