@@ -214,13 +214,34 @@ function thing(mass, pos, vel) {
 			
 			// set alpha vars
 			var alpha = HISTORY_ALPHA;
-			var alphaStep = alpha / this.history.length;
+			// var alphaStep = alpha / this.history.length;
+			var k = 0.75;
 
 			for (var i = 0; i < this.history.length; i++) {
-				alpha -= alphaStep;
+				// alpha -= alphaStep;
+				
+				/*
+				TODO: history alpha decay - need more testing to see which performs better
+
+					I think the actual decay model may outperform the pseudo one, but it
+					could also just be my imagination.  When all default values are used
+					other than setting history to 100 for both models, framerate seems 
+					to drop to about 11-12fps, bottoming out around 9fps (when history 
+					actually builds a bit), before climbing back to the default 60fps.
+
+					Holy shite!!! after creating a spreadsheet to compare both models I
+					just realized they are exactly equal (for the most part)!
+
+					I still think the actual model performs better than the simpler 
+					pseudo equation.  It doesn't make sense, but it's just my empirical
+					observation.
+
+				*/
+				
+				alpha = HISTORY_ALPHA * exp(log(k) * i); 	// <-- actual decay model
 				
 				// check threshold
-				if (alpha < HISTORY_ALPHA_CUTOFF_THRESHOLD) {
+				if (alpha <= HISTORY_ALPHA_CUTOFF_THRESHOLD) {
 					break;
 				}
 
@@ -233,6 +254,8 @@ function thing(mass, pos, vel) {
 					fill(historyColor);
 					ellipse(0, 0, (1 - i / this.history.length) * this.getRadius());
 				pop();
+
+				// alpha *= k;							// <-- pseudo decay model
 			}
 
 		}
