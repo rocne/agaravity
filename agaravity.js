@@ -346,7 +346,6 @@ function draw() {
 
 	displayThings();
 	pop();
-
 	displayFrameRate();
 }
 

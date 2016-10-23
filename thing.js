@@ -184,6 +184,7 @@ function thing(mass, pos, vel) {
 				*/
 				var gradientLevels = 20;
 				
+				// aplha blending and decay values
 				var alpha = 0.5;
 				var k = 0.88;
 
