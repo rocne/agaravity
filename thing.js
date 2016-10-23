@@ -178,12 +178,30 @@ function thing(mass, pos, vel) {
 			// draw large "orbit" disc
 			push();
 				var gsl = 128; // greyscale level
-				// and use rgba so we can use alpha channel
-				var diskColor = "rgba(" + gsl + "," + gsl + "," + gsl + "," + 0.5 + ")"
+				
+				/*
+				20 seems to be a good level to not detrementally degrade overall performance and still allow a visually pleasing fading gradient.  I tried 10 but when things got larger the mach banding was overtly obvious.
+				*/
+				var gradientLevels = 20;
+				
+				var alpha = 0.5;
+				var k = 0.88;
 
 				noStroke(); // no outline on disk?  preference call
-				fill(diskColor);
-				ellipse(0, 0, 2 * r_indicator);
+
+				// use gradient to create "cloud" around thing
+				for (var r = 1; r <= gradientLevels; r++) {
+					alpha = HISTORY_ALPHA * exp(log(k) * r);
+					// check threshold
+					if (alpha <= HISTORY_ALPHA_CUTOFF_THRESHOLD) {
+						break;
+					}
+					// and use rgba so we can use alpha channel
+					var diskColor = "rgba(" + gsl + "," + gsl + "," + gsl + "," + alpha + ")"
+					fill(diskColor);
+					ellipse(0, 0, r_indicator * (1 + float(r / gradientLevels)));
+				}
+				
 			pop();
 			
 			// draw the actual "thing"
@@ -211,7 +229,7 @@ function thing(mass, pos, vel) {
 			var green = 128;
 			var blue = 200;
 			var historyColor;
-			
+
 			// set alpha vars
 			var alpha = HISTORY_ALPHA;
 			// var alphaStep = alpha / this.history.length;
@@ -237,7 +255,7 @@ function thing(mass, pos, vel) {
 					observation.
 
 				*/
-				
+
 				alpha = HISTORY_ALPHA * exp(log(k) * i); 	// <-- actual decay model
 				
 				// check threshold
