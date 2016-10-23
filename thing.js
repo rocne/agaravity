@@ -66,7 +66,7 @@ function thing(mass, pos, vel) {
 	
 	this.toggleLocked = function() {
 		this.isLocked = !this.isLocked;
-		}
+	}
 
 	this.applyAccumulatedForce = function() {
 		var accelarationMag = this.accumulatedForce.mag() / this.mass;
@@ -86,6 +86,15 @@ function thing(mass, pos, vel) {
 	}
 
 	this.getGravitationalForce = function(otherThing) {
+		/*
+		F = G * m_1 * m_2 / r^2, where:
+
+			F = total applied force
+			G = Gravity constant
+			m_1 = mass of first object, (this in our case)
+			m_2 = mass of second object, (otherThing)
+			r = distance between m_1 and m_2
+		*/ 
 		var r = this.distanceTo(otherThing);
 		var grav = GRAV * this.mass * otherThing.mass / (r * r);
 		var gravVector = p5.Vector.sub(otherThing.pos, this.pos);
@@ -169,12 +178,30 @@ function thing(mass, pos, vel) {
 			// draw large "orbit" disc
 			push();
 				var gsl = 128; // greyscale level
-				// and use rgba so we can use alpha channel
-				var diskColor = "rgba(" + gsl + "," + gsl + "," + gsl + "," + 0.5 + ")"
+				
+				/*
+				20 seems to be a good level to not detrementally degrade overall performance and still allow a visually pleasing fading gradient.  I tried 10 but when things got larger the mach banding was overtly obvious.
+				*/
+				var gradientLevels = 20;
+				
+				var alpha = 0.5;
+				var k = 0.88;
 
 				noStroke(); // no outline on disk?  preference call
-				fill(diskColor);
-				ellipse(0, 0, 2 * r_indicator);
+
+				// use gradient to create "cloud" around thing
+				for (var r = 1; r <= gradientLevels; r++) {
+					alpha = HISTORY_ALPHA * exp(log(k) * r);
+					// check threshold
+					if (alpha <= HISTORY_ALPHA_CUTOFF_THRESHOLD) {
+						break;
+					}
+					// and use rgba so we can use alpha channel
+					var diskColor = "rgba(" + gsl + "," + gsl + "," + gsl + "," + alpha + ")"
+					fill(diskColor);
+					ellipse(0, 0, r_indicator * (1 + float(r / gradientLevels)));
+				}
+				
 			pop();
 			
 			// draw the actual "thing"
@@ -202,16 +229,37 @@ function thing(mass, pos, vel) {
 			var green = 128;
 			var blue = 200;
 			var historyColor;
-			
+
 			// set alpha vars
 			var alpha = HISTORY_ALPHA;
-			var alphaStep = alpha / this.history.length;
+			// var alphaStep = alpha / this.history.length;
+			var k = 0.75;
 
 			for (var i = 0; i < this.history.length; i++) {
-				alpha -= alphaStep;
+				// alpha -= alphaStep;
+				
+				/*
+				TODO: history alpha decay - need more testing to see which performs better
+
+					I think the actual decay model may outperform the pseudo one, but it
+					could also just be my imagination.  When all default values are used
+					other than setting history to 100 for both models, framerate seems 
+					to drop to about 11-12fps, bottoming out around 9fps (when history 
+					actually builds a bit), before climbing back to the default 60fps.
+
+					Holy shite!!! after creating a spreadsheet to compare both models I
+					just realized they are exactly equal (for the most part)!
+
+					I still think the actual model performs better than the simpler 
+					pseudo equation.  It doesn't make sense, but it's just my empirical
+					observation.
+
+				*/
+
+				alpha = HISTORY_ALPHA * exp(log(k) * i); 	// <-- actual decay model
 				
 				// check threshold
-				if (alpha < HISTORY_ALPHA_CUTOFF_THRESHOLD) {
+				if (alpha <= HISTORY_ALPHA_CUTOFF_THRESHOLD) {
 					break;
 				}
 
@@ -224,6 +272,8 @@ function thing(mass, pos, vel) {
 					fill(historyColor);
 					ellipse(0, 0, (1 - i / this.history.length) * this.getRadius());
 				pop();
+
+				// alpha *= k;							// <-- pseudo decay model
 			}
 
 		}
