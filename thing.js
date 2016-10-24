@@ -27,9 +27,9 @@ function thing(mass, pos, vel) {
 	// fields
 	this.angle = 0;
 	this.angularVelocity = 0.1;
-	this.mass = mass; //2275 + Math.random() * 100;
-	this.pos = pos; //createVector(Math.floor(Math.random() * getZoomedWidth()), Math.floor(Math.random() * getZoomedHeight()));
-	this.vel = vel; //createVector(Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL, Math.floor(Math.random() * 2 * MAX_RAND_VEL) - MAX_RAND_VEL);	
+	this.mass = mass;
+	this.pos = pos;
+	this.vel = vel;	
 	this.isLocked = false;
 
 	this.history = [];
@@ -39,9 +39,6 @@ function thing(mass, pos, vel) {
 
 	// public functions
 	this.getRadius = function() {
-		// things are 2D. density is Mass / area
-		// area = pi*r^2, r = sqrt(area / pi)
-
 		var area = this.mass / DENSITY;
 		var radius = Math.sqrt(area / Math.PI);
 		return radius;
@@ -87,13 +84,13 @@ function thing(mass, pos, vel) {
 
 	this.getGravitationalForce = function(otherThing) {
 		/*
-		F = G * m_1 * m_2 / r^2, where:
-
-			F = total applied force
-			G = Gravity constant
-			m_1 = mass of first object, (this in our case)
-			m_2 = mass of second object, (otherThing)
-			r = distance between m_1 and m_2
+		* F = G * m_1 * m_2 / r^2, where:
+		*
+		*	F = total applied force
+		*	G = Gravity constant
+		*	m_1 = mass of first object, (this in our case)
+		*	m_2 = mass of second object, (otherThing)
+		*	r = distance between m_1 and m_2
 		*/ 
 		var r = this.distanceTo(otherThing);
 		var grav = GRAV * this.mass * otherThing.mass / (r * r);
@@ -116,8 +113,6 @@ function thing(mass, pos, vel) {
 		var totalMomentum = this.getCombinedMomentum(otherThing);
 		this.mass += otherThing.mass;
 
-		// this conserves momentum. Get the total momentum, then 
-		// figure out how fast the combined mass would be going with that momentum.
 		this.vel = p5.Vector.mult(totalMomentum, 1.0 / this.mass);
 
 		otherThing.shouldBeDestroyed = true;
@@ -155,15 +150,13 @@ function thing(mass, pos, vel) {
 	}
 	
 	this.updateHistory = function() {
-		this.history.unshift(this.pos.copy());		// insert at front
+		this.history.unshift(this.pos.copy());
 		if (this.history.length > HISTORY_LENGTH) {
-			this.history.pop();						// remove from rear
+			this.history.pop();
 		}
 	}
 	
 	this.show = function () {
-		// TODO: recommend moving color constant definitions either here or define them at the top of this script.
-		
 		this.showHistory();
 		this.showBody();
 	}
@@ -174,30 +167,25 @@ function thing(mass, pos, vel) {
 
 		push();
 			translate(this.pos.x, this.pos.y);
+			rotate(this.angle);
 
 			// draw large "orbit" disc
 			push();
-				var gsl = 128; // greyscale level
+				var gsl = 128;
 				
-				/*
-				20 seems to be a good level to not detrementally degrade overall performance and still allow a visually pleasing fading gradient.  I tried 10 but when things got larger the mach banding was overtly obvious.
-				*/
 				var gradientLevels = 20;
 				
-				// aplha blending and decay values
 				var alpha = 0.5;
 				var k = 0.88;
 
-				noStroke(); // no outline on disk?  preference call
+				noStroke();
 
 				// use gradient to create "cloud" around thing
 				for (var r = 1; r <= gradientLevels; r++) {
 					alpha = HISTORY_ALPHA * exp(log(k) * r);
-					// check threshold
 					if (alpha <= HISTORY_ALPHA_CUTOFF_THRESHOLD) {
 						break;
 					}
-					// and use rgba so we can use alpha channel
 					var diskColor = "rgba(" + gsl + "," + gsl + "," + gsl + "," + alpha + ")"
 					fill(diskColor);
 					ellipse(0, 0, r_indicator * (1 + float(r / gradientLevels)));
@@ -211,55 +199,35 @@ function thing(mass, pos, vel) {
 				ellipse(0, 0, radius);
 			pop();
 			
-			// draw orbiting body
+			// draw rotation indicator
 			push();
-				var orbitBodyColor = "rgb(255, 0, 0)";
-				
-				rotate(this.angle);
-				translate(0, r_indicator - INDICATOR_SIZE_RATIO * radius);
-				fill(orbitBodyColor);
-				ellipse(0, 0, 2 * radius * INDICATOR_SIZE_RATIO);
+				translate(0, r_indicator);
+				fill(255, 0, 0);
+				ellipse(0, 0, radius * INDICATOR_SIZE_RATIO);
+			pop();
+
+			push();
+				var sinComponent = (sin(frameCount / 30) + 1) / 2;
+				var breathingCenterRadius = (0.5 + sinComponent * 0.5) * radius * 0.6;
+				fill(200, 200, 200);
+				ellipse(0, 0, breathingCenterRadius);
 			pop();
 		pop();
 	}
 
 	this.showHistory = function() {
 		if (SHOW_HISTORY) {
-			// set history color
 			var red = 0;
 			var green = 128;
 			var blue = 200;
 			var historyColor;
 
-			// set alpha vars
 			var alpha = HISTORY_ALPHA;
-			// var alphaStep = alpha / this.history.length;
 			var k = 0.75;
 
 			for (var i = 0; i < this.history.length; i++) {
-				// alpha -= alphaStep;
+				alpha = HISTORY_ALPHA * exp(log(k) * i);				
 				
-				/*
-				TODO: history alpha decay - need more testing to see which performs better
-
-					I think the actual decay model may outperform the pseudo one, but it
-					could also just be my imagination.  When all default values are used
-					other than setting history to 100 for both models, framerate seems 
-					to drop to about 11-12fps, bottoming out around 9fps (when history 
-					actually builds a bit), before climbing back to the default 60fps.
-
-					Holy shite!!! after creating a spreadsheet to compare both models I
-					just realized they are exactly equal (for the most part)!
-
-					I still think the actual model performs better than the simpler 
-					pseudo equation.  It doesn't make sense, but it's just my empirical
-					observation.
-
-				*/
-
-				alpha = HISTORY_ALPHA * exp(log(k) * i); 	// <-- actual decay model
-				
-				// check threshold
 				if (alpha <= HISTORY_ALPHA_CUTOFF_THRESHOLD) {
 					break;
 				}
@@ -268,13 +236,12 @@ function thing(mass, pos, vel) {
 				push();
 					historyColor = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
 
-					noStroke();	// no outlines in history/tail?  preference call
+					noStroke();
 					translate(this.history[i].x, this.history[i].y);
 					fill(historyColor);
 					ellipse(0, 0, (1 - i / this.history.length) * this.getRadius());
 				pop();
 
-				// alpha *= k;							// <-- pseudo decay model
 			}
 
 		}
