@@ -108,9 +108,6 @@ function rightClick() {
 }
 
 function centerClick() {
-	// TODO: implement ability to use scroll wheel to change size of 
-	//	 the things that you shoot with left click. Might not belong
-	//	 in centerClick. Maybe there is another scroll event.
 	console.log("centerClick hasn't been implemented");
 }
 
@@ -294,10 +291,6 @@ function setup() {
 	lastFrameTime = getTime();
 	imageMode(CORNER);
 
-	// so radius calculation (thing.getRadius() translates to actual drawn radius
-	// this allows collisions to look natural (i.e. dark part of things collide and merge)
-	// indicator was not adjusted because I think it looks cool in the center dark area and it
-	// makes the things look like they have a little atmosphere or something
 	ellipseMode(RADIUS);
 }
 
@@ -391,7 +384,6 @@ function handleInteractions() {
 	for (var i = 0; i < th.length; i++) {
 		for (var j = 0; j < th.length; j++) {
 			if (i != j) {
-				// handle interaction
 				th[i].accumulateForce(th[i].getGravitationalForce(th[j]));
 				if (th[i].isCollidingWith(th[j])) {
 					if (th[i].mass > th[j].mass)
